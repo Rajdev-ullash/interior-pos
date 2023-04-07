@@ -1,0 +1,61 @@
+h1, h2, h3, h4, h5, h6 {
+   font-family: Calibri, Arial, sans-serif;
+    font-weight: 400;
+    color: #000000;
+}
+#headertable{
+    width: 720px;
+    border: none;
+}
+#bodytable{
+	border-collapse: collapse;
+	border: 1px solid black;
+    width: 720px;
+}
+#footertable{
+    width: 720px;
+    border: none;
+}
+#footertable td{
+	text-align:right;
+}
+#bodytable td, th{
+
+	border: 1px solid black;
+}
+#title{
+	float:left;
+	width:45%;
+	overflow:hidden;
+}
+#backlink{
+	float:left;
+	width:25%;
+	overflow:hidden;
+}
+a{
+	text-decoration: none;
+}
+table tr td:nth-child(3) {
+text-align:right;
+}
+table tr td:nth-child(4) {
+text-align:right;
+}
+table tr td:nth-child(5) {
+text-align:right;
+}
+#memobody{
+	width: 730px;
+}
+body{
+font-size: 17px;
+font-family: Calibri, Arial, sans-serif;
+}
+p{
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+}
+#maindiv{
+	margin-top: 250px;
+}
