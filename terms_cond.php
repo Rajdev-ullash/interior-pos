@@ -8,7 +8,7 @@ include_once('databases.php');
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">CUSTOMER</h4>
+            <h4 class="mb-3 mb-md-0">TERMS & CONDITIONS</h4>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap">
             <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0" data-bs-toggle="modal"
@@ -26,28 +26,27 @@ include_once('databases.php');
                         <table id="dataTableExample" class="table table-hover table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th>Sl No</th>
                                     <th>Name</th>
-                                    <th>Address</th>
-                                    <th>City</th>
-                                    <th>Phone</th>
-                                    <th>Contact Person</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                      $query = "SELECT * FROM customer ORDER BY cname DESC";  
+                      $query = "SELECT * FROM terms_cond ORDER BY id DESC";  
                       $select_result = mysqli_query($connection, $query);  
                       while($row = mysqli_fetch_array($select_result)){      
                       ?>
                                 <tr>
-                                    <td><?php echo $row['cname'];?></td>
-                                    <td><?php echo $row['address'];?></td>
-                                    <td><?php echo $row['city'];?></td>
-                                    <td><?php echo $row['phone'];?></td>
-                                    <td><?php echo $row['contact_person'];?></td>
+                                    <td>
+                                        <?php static $i = 1;
+                                        echo $i++;
+                                        ?>
+                                    </td>
+                                    <td><?php echo $row['tname'];?></td>
+
                                     <td><a class="btn btn-primary btn-xs me-2"
-                                            href="customer_edit.php?id=<?php echo $row['cid'];?>">Edit</a></td>
+                                            href="category_edit.php?id=<?php echo $row['id'];?>">Edit</a></td>
                                 </tr>
                                 <?php
                       }
@@ -81,36 +80,15 @@ include_once('databases.php');
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">NEW CUSTOMER</h5>
+                <h5 class="modal-title" id="exampleModalLabel">NEW TERMS & CONDITIONS</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
             </div>
             <div class="modal-body">
                 <form class="forms-sample" id="frmsetup" name="frmsetup">
 
                     <div class="mb-3">
-                        <label for="cname" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="cname" name="cname" placeholder="Customer name">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="address" name="address" placeholder="Address">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="city" name="city" placeholder="City">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="contact_person" class="form-label">Contact person</label>
-                        <input type="text" class="form-control" id="contact_person" name="contact_person"
-                            placeholder="Contact person">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="name">
                     </div>
                 </form>
             </div>
@@ -158,21 +136,37 @@ include_once('databases.php');
 <script type="text/javascript">
 function addRecord() {
     //alert(1);
+    //get value
+    var name = $("#name").val();
+
+    if (name == "") {
+        alert("Name is required");
+        return false;
+    }
+
+
+    //Add the quotation details to the database
+
     $.ajax({
-
-        method: "post",
-        url: "customer_insert.php",
-        datatype: "html",
-        data: $('#frmsetup').serialize(),
-        success: function(data) {
-            if (data != "") {
-                $("#datagrid").html(data);
-                $('#modalx').modal('hide');
-                showSwal('custom-position');
+        url: 'terms_cond_insert.php',
+        type: 'POST',
+        data: {
+            name: name,
+        },
+        success: function(response) {
+            if (response == 1) {
+                alert("Terms & Conditions Added Successfully");
+                window.location.reload();
+            } else {
+                alert("Failed to add Terms & Conditions");
             }
+        },
+        error: function(response) {
+            alert("Failed to add Terms & Conditions");
+        },
 
-        }
     });
+
 
 }
 </script>

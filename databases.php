@@ -2,7 +2,7 @@
 $dbhost = "localhost";
 $dbuser = "root";
 $dbpass = "";
-$dbname = "carcode";
+$dbname = "bluedot_new";
 
 $connection = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
