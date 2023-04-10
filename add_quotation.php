@@ -2,7 +2,12 @@
 include 'header.php';
 include 'sidebar.php';
 include 'navbar.php';
+include 'checklogin.php';
 include_once('databases.php');
+
+//get logged in user id
+$username = $_SESSION['user'];
+
 //get id from url
 $id = $_GET['id'];
 //select data from database
@@ -11,6 +16,8 @@ $query = "SELECT * FROM rfp WHERE id = $id";
 $result = mysqli_query($connection, $query);
 //fetch data from database
 $row = mysqli_fetch_array($result);
+
+
 
 
 //payment mode query
@@ -49,29 +56,30 @@ $i=0;
                     <h6 class="card-title">QUOTATION INFORMATION</h6>
                     <div class="row mt-3">
                         <div class="d-flex">
-                            Date : <span class="text-danger ms-2"><?php echo $row['rdate']; ?></span>
+                            Date : <span class="text-danger ms-2" id="rdate"><?php echo $row['rdate']; ?></span>
                         </div>
                     </div>
                     <div class="row mt-3 align-items-center">
                         <div class="col-md-3">
                             <div class="d-flex">
-                                Customer Name : <span
-                                    class="text-uppercase text-danger ms-2"><?php echo $row['customer']; ?></span>
+                                Customer Name : <span class="text-uppercase text-danger ms-2"
+                                    id="cname"><?php echo $row['customer']; ?></span>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="d-flex">
-                                Mobile : <span class="text-danger ms-2"><?php echo $row['mob']; ?></span>
+                                Mobile : <span class="text-danger ms-2" id="mob"><?php echo $row['mob']; ?></span>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="d-flex">
-                                Address : <span class="text-danger ms-2"><?php echo $row['address']; ?></span>
-                            </div>
+
+                            <input type="email " class="form-control" id="cemail" name="cemail"
+                                placeholder="Customer Email" data-input required>
+
                         </div>
                         <div class="col-md-3">
-                            <select class="form-select" id="sup" name="sup">
-                                <option selected disabled>Select Category</option>
+                            <select class="form-select" id="category" name="category">
+                                <option selected value="cx">Select Category</option>
                                 <?php
                                     $cquery = "SELECT * FROM category ORDER BY id DESC";  
                                     $cresult = mysqli_query($connection, $cquery);  
@@ -86,12 +94,24 @@ $i=0;
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex">
-                            Address : <span class="text-danger ms-2"><?php echo $row['address']; ?></span>
+                            Address : <span class="text-danger ms-2" id="caddress"><?php echo $row['address']; ?></span>
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex">
-                            Description : <span class="text-danger ms-2"><?php echo $row['description']; ?></span>
+                            Description : <span class="text-danger ms-2"
+                                id="cdescription"><?php echo $row['description']; ?></span>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="d-flex">
+                            <div>
+                                Customer Area :
+                            </div>
+
+                            <input type="text" class="form-control ms-4" id="carea" name="carea"
+                                placeholder="Customer Area" data-input>
+
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -139,11 +159,14 @@ $i=0;
                                             <th class="text-center" id="thdate" style="width:10%">
                                                 Quantity
                                             </th>
-                                            <th class="text-center" id="thdate" style="width:10%">
+                                            <th class="text-center" id="thdate" style="width:7%">
                                                 Uom
                                             </th>
-                                            <th class="text-center" id="thdate" style="width:17%">
+                                            <th class="text-center" id="thdate" style="width:10%">
                                                 Rate
+                                            </th>
+                                            <th class="text-center" id="thdate" style="width:10%">
+                                                Amount
                                             </th>
                                             <th class="text-center" id="thdate" style="width:20%">
                                                 Remarks
@@ -159,8 +182,9 @@ $i=0;
 
 
                                             <td>
-                                                <select class="form-select" name="serviceid" id="serviceid">
-                                                    <option disabled selected value="xx">Select series</option>
+                                                <select class="form-select" name="service[]" id="service0"
+                                                    onchange="chkproblem(0)">
+                                                    <option disabled selected value>Select Service</option>
                                                     <?php
                           $query = "SELECT * FROM services ORDER BY serviceid ASC";  
                           $select_result = mysqli_query($connection, $query);  
@@ -172,28 +196,42 @@ $i=0;
                       }
                       ?>
                                                 </select>
-
-
-
+                                                <select class="form-select" name="service" id="service" hidden>
+                                                    <option disabled selected value>Select Service</option>
+                                                    <?php
+                                                        $query = "SELECT * FROM services ORDER BY serviceid ASC";  
+                                                        $select_result = mysqli_query($connection, $query);  
+                                                        while($row = mysqli_fetch_array($select_result)){
+                                                    ?>
+                                                    <option value="<?php echo $row['serviceid']; ?>">
+                                                        <?php echo $row['sname'];?></option>
+                                                    <?php
+                                                    }
+                                                    ?>
+                                                </select>
                                             </td>
                                             <td>
-                                                <input type="text" name="description" id="description"
+                                                <input type="text" name="description[]" id="description0"
                                                     class="form-control rounded" onblur="checkr(0);" value="">
                                             </td>
                                             <td>
-                                                <input type="text" name="quantity" id="quantity"
+                                                <input type="number" name="quantity[]" id="quantity0"
                                                     class="form-control rounded" onblur="checkr(0);" value="">
                                             </td>
                                             <td>
-                                                <input type="text" name="uom" id="uom" class="form-control rounded"
-                                                    onblur="checkr(0);" value="">
+                                                <input type="text" name="uom[]" id="uom0" class="form-control rounded"
+                                                    onblur="checkr(0);" value="" readonly>
                                             </td>
                                             <td>
-                                                <input type="text" name="rate" id="rate" class="form-control rounded"
-                                                    onblur="checkr(0);" value="">
+                                                <input type="number" name="rate[]" id="rate0"
+                                                    class="form-control rounded" onblur="checkr(0);" value="" readonly>
                                             </td>
                                             <td>
-                                                <input type="text" name="remark" id="remark"
+                                                <input type="number" name="amount[]" id="amount0"
+                                                    class="form-control rounded" onblur="checkr(0);" value="">
+                                            </td>
+                                            <td>
+                                                <input type="text" name="remark[]" id="remark0"
                                                     class="form-control rounded" onblur="checkr(0);" value="">
                                             </td>
 
@@ -289,56 +327,178 @@ $i=0;
 <!-- End custom js for this page -->
 
 <script type="text/javascript">
-//take value serviceid in onchange event of select field
-document.getElementById('serviceid').onchange = function() {
-    //get the selected option value from the select field
-    var serviceid = this.value;
-    //make a request to the server
-    $.ajax({
-        url: 'specific_service_info.php',
-        type: 'post',
-        data: {
-            serviceid: serviceid
-        },
-        success: function(response) {
-            console.log(response);
-            //alert(response);
-            var data = JSON.parse(response);
-            console.log(data);
-            //alert(index);
-            // $('#description' + index).val(data.description);
-            $('#uom').val(data.uom);
-            $('#rate').val(data.rate);
-        }
-    });
-}
-
 var i = 1;
 
 function addrow() {
+    //td value id increment by 1
 
-    $('#addr' + i).html("<td>" + (i + 1) +
-        "</td><td><select onchange='getSelectedValue()' class='form-select' name='serviceid" +
-        i +
-        "' id='serviceid" + i +
-        "' onblur='checkr(" + i +
-        ");'><option disabled selected value='xx'>Select series</option><?php $query = 'SELECT * FROM services ORDER BY serviceid ASC'; $select_result = mysqli_query($connection, $query); while($row = mysqli_fetch_array($select_result)){ ?><option value='<?php echo $row['serviceid']; ?>'><?php echo $row['sname'];?></option><?php } ?></select></td><td><input type='text' name='description" +
-        i + "' id='description" + i + "' class='form-control rounded' onblur='checkr(" + i +
-        ");' value=''></td><td><input type='text' name='quantity" +
-        i + "' id='quantity" + i + "' class='form-control rounded' onblur='checkr(" + i +
-        ");' value=''></td><td><input type='text' name='ch" +
-        i + "' id='ch" + i + "' class='form-control rounded' onblur='checkr(" + i +
-        ");' value=''></td><td><input type='text' name='qty" +
-        i + "' id='qty" + i + "' class='form-control rounded' onblur='checkr(" + i +
-        ");' value=''></td><td><input type='text' name='unit" +
-        i + "' id='unit" + i + "' class='form-control rounded' onblur='checkr(" + i +
-        ");' value=''></td><td><input type='text' name='fr" +
-        i + "' id='fr" + i + "' class='form-control rounded' onblur='checkr(" + i + ");' value=''></td>");
+    $('#addr' + i).html('<td>' + (i + 1) + '</td><td><select onchange="chkproblem(' + i +
+        ')" class="form-select" name="service[]" id="service' +
+        i + '""></select></td><td><input onblur="checkr(' + i + ')"  name="description[]" id="description' +
+        i + '" type="text" class="form-control square"</td><td><input onblur="checkr(' + i +
+        ')"  name="quantity[]" id="quantity' + i +
+        '" type="number" class="form-control square"></td><td><input onblur="checkr(' + i +
+        ')"  name="uom[]" id="uom' + i +
+        '" type="text" class="form-control square" readonly></td><td><input onblur="checkr(' + i +
+        ')"  name="rate[]" id="rate' + i +
+        '" type="number" class="form-control square" readonly></td><td><input onblur="checkr(' + i +
+        ')"  name="amount[]" id="amount' + i +
+        '" type="number" class="form-control square"></td><td><input onblur="checkr(' + i +
+        ')"  name="remark[]" id="remark' + i + '" type="text" class="form-control square"></td>');
 
     $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+
+
+    /*1st select content copy */
+    var $options = $("#service > option").clone();
+    // alert($options);
+    $('#service' + i).append($options);
+
     i++;
 
 }
+
+
+
+function chkproblem(id) {
+    var serviceid = document.getElementById("service" + id).value;
+
+    //get specific_service_info from database
+    $.ajax({
+        url: "specific_service_info.php",
+        type: "POST",
+        data: {
+            serviceid: serviceid
+        },
+        success: function(data) {
+            var obj = JSON.parse(data);
+            //set value to uom & rate
+            document.getElementById("uom" + id).value = obj.uom;
+            document.getElementById("rate" + id).value = obj.rate;
+
+
+
+
+        }
+
+    })
+}
+
+function saveRecord() {
+    var service = document.getElementsByName("service[]");
+    var description = document.getElementsByName("description[]");
+    var quantity = document.getElementsByName("quantity[]");
+    var uom = document.getElementsByName("uom[]");
+    var rate = document.getElementsByName("rate[]");
+    var amount = document.getElementsByName("amount[]");
+    var remark = document.getElementsByName("remark[]");
+
+    var serviceid = [];
+    var descriptionid = [];
+    var quantityid = [];
+    var uomid = [];
+    var rateid = [];
+    var amountid = [];
+    var remarkid = [];
+    for (var i = 0; i < service.length; i++) {
+
+        serviceid.push(service[i].value);
+        descriptionid.push(description[i].value);
+        quantityid.push(quantity[i].value);
+        uomid.push(uom[i].value);
+        rateid.push(rate[i].value);
+        amountid.push(amount[i].value);
+        remarkid.push(remark[i].value);
+
+
+    }
+
+
+
+    var rdate = $("#rdate").html();
+    var cname = $("#cname").html();
+    var mob = $("#mob").html();
+    var cemail = $("#cemail").val();
+    var category = $("#category").val();
+    var caddress = $("#caddress").html();
+    var cdescription = $("#cdescription").html();
+    var carea = $("#carea").val();
+    var pname = $("#pname").val();
+    var tname = $("#tname").val();
+    var preparedby = '<?php echo $username ?>'
+
+    if (cemail == '') {
+        alert("Please Enter Email");
+    }
+    if (category == 'cx') {
+        alert("Please Select Category");
+    }
+    if (carea == '') {
+        alert("Please Select Area");
+    }
+    if (pname == '') {
+        alert("Please Select Payment Mode");
+    }
+    if (tname == '') {
+        alert("Please Select Terms");
+    }
+
+
+    var form = $('#frmsetup')[0];
+    var data = new FormData(form);
+    data.append("serviceid", serviceid);
+    data.append("descriptionid", descriptionid);
+    data.append("quantityid", quantityid);
+    data.append("uomid", uomid);
+    data.append("rateid", rateid);
+    data.append("amountid", amountid);
+    data.append("remarkid", remarkid);
+    data.append("rdate", rdate);
+    data.append("cname", cname);
+    data.append("mob", mob);
+    data.append("cemail", cemail);
+    data.append("category", category);
+    data.append("caddress", caddress);
+    data.append("cdescription", cdescription);
+    data.append("carea", carea);
+    data.append("pname", pname);
+    data.append("tname", tname);
+    data.append("preparedby", preparedby);
+
+    $.ajax({
+        url: "quotation_insert.php",
+        type: "POST",
+        data: data,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+
+            alert('Record Saved Successfully');
+
+            // console.log(data);
+            window.location.reload();
+
+        },
+        error: function(data) {
+            console.log(data);
+            alert('Record Not Saved');
+        }
+    })
+
+
+
+
+}
+
+function checkr() {
+
+}
+
+
+
+
+
+
 
 
 
@@ -348,24 +508,6 @@ function delrow() {
         $("#addr" + (i - 1)).html('');
         i--;
     }
-}
-
-function getSelectedValue() {
-    //take value serviceid in onchange event of select field
-    //index of selected option
-    var index = document.getElementById('serviceid').selectedIndex;
-    //get the selected option value from the select field
-    var serviceid = document.getElementById('serviceid').options[index].value;
-    alert(serviceid);
-
-}
-
-
-function saveRecord() {
-    event.preventDefault();
-    $('#frmsetup').serialize();
-    $('#frmsetup').submit();
-
 }
 </script>
 </body>
