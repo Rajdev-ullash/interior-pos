@@ -39,56 +39,42 @@ If(!empty($_POST)){
     $tname = mysqli_real_escape_string($connection, $_POST["tname"]);
     $preparedby = mysqli_real_escape_string($connection, $_POST["preparedby"]);
     $reqid = mysqli_real_escape_string($connection, $_POST["reqid"]);
+    $uid = mysqli_real_escape_string($connection, $_POST["id"]);
+
+    //status get in database
+
+    $q = "SELECT * FROM quotation";
+    $result5 = mysqli_query($connection, $q);
+    if(!$result5){
+        die("Database query failed.");
+    }
+    $row5 = mysqli_fetch_assoc($result5);
+    $status = $row5['status'];
     
 
-    
+    //update quotation
+    $query = "UPDATE quotation SET qdate='$rdate', customer='$cname', address='$caddress', area='$carea', mobile='$mob', email='$cemail', category='$category', description='$cdescription', paymentmode='$pname', terms='$tname',status='$status',preparedby='$preparedby' WHERE qid='$uid'";
 
-    //get user id from session
-
-    $query = "INSERT INTO quotation(qdate,customer,address,area,mobile,email,category,description,paymentmode,terms,status,preparedby) VALUES ('$rdate', '$cname', '$caddress', '$carea', '$mob', '$cemail', '$category',  '$cdescription', '$pname', '$tname', 'pending', '$preparedby')";
-    
-	
-
-	if(mysqli_query($connection, $query)){
-        //update the req_quotation status to done with the id
-        
-
-        if(mysqli_affected_rows($connection) == 1){
-            $last_id = mysqli_insert_id($connection);
-            $count = count($service);
-        
-            for($i=0; $i<$count; $i++){
-                $query1 = "INSERT INTO quotationdetail(qidf,service,description,quantity,uom,rate,amount,remarks) VALUES ('$last_id', '$service[$i]', '$description[$i]', '$quantity[$i]', '$uom[$i]', '$rate[$i]', '$amount[$i]', '$remark[$i]')";
-                if(mysqli_query($connection, $query1)){
-                    if(mysqli_affected_rows($connection) == 1){
-                        echo "success";
-                    }else{
-                        echo "fail";
-                    }
-                }else{
-                    echo("Error description: " . mysqli_error($connection));
+    if (mysqli_query($connection, $query)) {
+        $last_id = mysqli_insert_id($connection);
+        $query = "DELETE FROM quotationdetail WHERE qidf='$uid'";
+        if (mysqli_query($connection, $query)) {
+            for($i=0; $i<count($service); $i++){
+                $query = "INSERT INTO quotationdetail (qidf, service, description, quantity, uom, rate, remarks, amount) VALUES ('$uid', '$service[$i]', '$description[$i]', '$quantity[$i]', '$uom[$i]', '$rate[$i]', '$remark[$i]', '$amount[$i]')";
+                if (mysqli_query($connection, $query)) {
+                    $last_id = mysqli_insert_id($connection);
+                } else {
+                    echo "Error: " . $query . "<br>" . mysqli_error($connection);
                 }
             }
-
-        }else{
-            echo "fail";
+        } else {
+            echo "Error: " . $query . "<br>" . mysqli_error($connection);
         }
-
-        $query2 = "UPDATE rfp SET status='done' WHERE id='$reqid'";
-        if(mysqli_query($connection, $query2)){
-            echo "success";
-        }
-
-        // sent error message if query execution failed in query1 loop 
-
-        echo "success";
-
-
-
-        
-	}else{
-        echo("Error description: " . mysqli_error($connection));
+    } else {
+        echo "Error: " . $query . "<br>" . mysqli_error($connection);
     }
+
+    
 }
 
 

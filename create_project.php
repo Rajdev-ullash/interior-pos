@@ -11,36 +11,18 @@ $username = $_SESSION['user'];
 //get id from url
 $id = $_GET['id'];
 //select data from database
-$query = "SELECT * FROM rfp WHERE id = $id";
+$query = "SELECT * FROM quotation WHERE qid = $id";
 //execute query
 $result = mysqli_query($connection, $query);
 //fetch data from database
 $row = mysqli_fetch_array($result);
 
-
-
-
-//payment mode query
-$query1 = "SELECT * FROM payment_mode";
-//execute query
-$result1 = mysqli_query($connection, $query1);
-//fetch data from database
-$row1 = mysqli_fetch_array($result1);
-
-// terms & conditions query
-$query2 = "SELECT * FROM terms_cond";
-//execute query
-$result2 = mysqli_query($connection, $query2);
-//fetch data from database
-$row2 = mysqli_fetch_array($result2);
-
-$i=0; 
 ?>
 <div class="page-content">
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">QUOTATION ENTRY</h4>
+            <h4 class="mb-3 mb-md-0">Project Create</h4>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap">
 
@@ -56,36 +38,38 @@ $i=0;
                     <h6 class="card-title">QUOTATION INFORMATION</h6>
                     <div class="row mt-3">
                         <div class="d-flex">
-                            Date : <span class="text-danger ms-2" id="rdate"><?php echo $row['rdate']; ?></span>
+                            Date : <span class="text-danger ms-2" id="qdate"><?php echo $row['qdate']; ?></span>
                         </div>
                     </div>
                     <div class="row mt-3 align-items-center">
-                        <div class="col-md-3">
-                            <div class="d-flex">
-                                Customer Name : <span class="text-uppercase text-danger ms-2"
-                                    id="cname"><?php echo $row['customer']; ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="d-flex">
-                                Mobile : <span class="text-danger ms-2" id="mob"><?php echo $row['mob']; ?></span>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
 
-                            <input type="email " class="form-control" id="cemail" name="cemail"
-                                placeholder="Customer Email" data-input required>
-
+                        <div class="col-md-3">
+                            <label for="psdate">Project Start Date</label>
+                            <input type="date" class="form-control mt-2" id="psdate" name="psdate"
+                                placeholder="Project Start Date" data-input value="">
                         </div>
                         <div class="col-md-3">
-                            <select class="form-select" id="category" name="category">
-                                <option selected value="cx">Select Category</option>
+                            <label for="pedate">Project End Date</label>
+                            <input type="date" class="form-control mt-2" id="pedate" name="pedate"
+                                placeholder="Project End Date" data-input value="">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="pduration">Project Duration</label>
+                            <input type="text" class="form-control mt-2" id="pduration" name="pduration" data-input
+                                value="">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="pmanager">Project Manager</label>
+                            <select class="form-select mt-2" id="pmanager" name="pmanager">
+                                <option selected value="cx">project manager</option>
                                 <?php
                                     $cquery = "SELECT * FROM category ORDER BY id DESC";  
                                     $cresult = mysqli_query($connection, $cquery);  
                                     while($crow = mysqli_fetch_array($cresult)){      
                                     ?>
-                                <option value="<?php echo $crow['id'];?>"><?php echo $crow['name'];?></option>
+                                <option value="<?php echo $crow['id']; ?>"
+                                    <?php if($row['category'] == $crow['id']){ echo "selected"; } ?>>
+                                    <?php echo $crow['name']; ?></option>
                                 <?php
                                 }
                                 ?>
@@ -94,7 +78,8 @@ $i=0;
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex">
-                            Address : <span class="text-danger ms-2" id="caddress"><?php echo $row['address']; ?></span>
+                            Customer Name : <span class="text-uppercase text-danger ms-2"
+                                id="cname"><?php echo $row['customer']; ?></span>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -106,14 +91,15 @@ $i=0;
                     <div class="row mt-3">
                         <div class="d-flex">
                             <div>
-                                Customer Area :
+                                Project Name :
                             </div>
 
-                            <input type="text" class="form-control ms-4" id="carea" name="carea"
-                                placeholder="Customer Area" data-input>
+                            <input type="text" class="form-control ms-4" id="project_name" name="project_name"
+                                placeholder="Enter Project Name" data-input value="">
 
                         </div>
                     </div>
+
                     <div class="row mt-3">
                         <div class="d-flex">
                             <div>
@@ -121,22 +107,33 @@ $i=0;
                             </div>
 
                             <input type="text" class="form-control ms-4" id="pname" name="pname" placeholder=""
-                                data-input value="<?php echo $row1['pname']; ?>">
+                                data-input value="<?php echo $row['paymentmode']; ?>">
 
                         </div>
+                        <input type="hidden" class="form-control ms-4" id="carea" name="carea" placeholder="" data-input
+                            value="<?php echo $row['area']; ?>">
+                        <input type="hidden" class="form-control ms-4" id="caddress" name="caddress" placeholder=""
+                            data-input value="<?php echo $row['address']; ?>">
+                        <input type="hidden" class="form-control ms-4" id="cmob" name="cmob" placeholder="" data-input
+                            value="<?php echo $row['mobile']; ?>">
+                        <input type="hidden" class="form-control ms-4" id="cemail" name="cemail" placeholder=""
+                            data-input value="<?php echo $row['email']; ?>">
+                        <input type="hidden" class="form-control ms-4" id="ccategory" name="ccategory" placeholder=""
+                            data-input value="<?php echo $row['category']; ?>">
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex">
                             <div>
-                                Terms & Conditions :
+                                Total Budget :
                             </div>
 
-                            <input type="text" class="form-control" id="tname" name="tname" placeholder="" data-input
-                                value="<?php echo $row2['tname']; ?>">
+                            <input type="text" class="form-control ms-4" id="total_budget" name="total_budget"
+                                placeholder="" data-input value="">
 
                         </div>
-                        <input type="hidden" class="form-control" id="req_id" name="req_id" value="<?php echo $id; ?>">
+
                     </div>
+
 
                     <form class="forms-sample mt-3" id="frmsetup" name="frmsetup" method="post" action="lc_insert.php">
                         <h4 class="form-title">Proposed Works</h4>
@@ -169,77 +166,63 @@ $i=0;
                                             <th class="text-center" id="thdate" style="width:10%">
                                                 Amount
                                             </th>
-                                            <th class="text-center" id="thdate" style="width:20%">
-                                                Remarks
-                                            </th>
-
-
 
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr id='addr0'>
-                                            <td>1</td>
-
-
-                                            <td>
-                                                <select class="form-select" name="service[]" id="service0"
-                                                    onchange="chkproblem(0)">
-                                                    <option disabled selected value>Select Service</option>
-                                                    <?php
-                          $query = "SELECT * FROM services ORDER BY serviceid ASC";  
-                          $select_result = mysqli_query($connection, $query);  
-                          while($row = mysqli_fetch_array($select_result)){
-                  ?>
-                                                    <option value="<?php echo $row['serviceid']; ?>">
-                                                        <?php echo $row['sname'];?></option>
-                                                    <?php
-                      }
-                      ?>
-                                                </select>
-                                                <select class="form-select" name="service" id="service" hidden>
-                                                    <option disabled selected value>Select Service</option>
-                                                    <?php
-                                                        $query = "SELECT * FROM services ORDER BY serviceid ASC";  
-                                                        $select_result = mysqli_query($connection, $query);  
-                                                        while($row = mysqli_fetch_array($select_result)){
-                                                    ?>
-                                                    <option value="<?php echo $row['serviceid']; ?>">
-                                                        <?php echo $row['sname'];?></option>
-                                                    <?php
+                                            <?php 
+                                                $query = "SELECT * FROM quotationdetail WHERE qidf = '$id'";
+                                                $result = mysqli_query($connection, $query);
+                                                $counter = 1;
+                                                //run a for loop of $total  results
+                                                foreach ($result as $row ) {
+                                                     echo "<tr>";
+                                                    echo "<td>" . $counter . "</td>";
+                                                    //form td with input field
+                                                    echo "<td>" 
+                                                    . "<select class='form-select' id='service0' name='service[]' required>" 
+                                                    . "<option selected value=''>Select Item</option>";
+                                                    //database query to fetch item list
+                                                    $query = "SELECT * FROM services ORDER BY serviceid DESC";
+                                                    $result = mysqli_query($connection, $query);
+                                                    while ($row2 = mysqli_fetch_array($result)) {
+                                                        //if item id is same as item id in the database
+                                                        if ($row['service'] == $row2['serviceid']) {
+                                                            echo "<option value='" . $row2['serviceid'] . "' selected>" . $row2['sname'] . "</option>";
+                                                        } else {
+                                                            echo "<option value='" . $row2['serviceid'] . "'>" . $row2['sname'] . "</option>";
+                                                        }
                                                     }
-                                                    ?>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="text" name="description[]" id="description0"
-                                                    class="form-control rounded" onblur="checkr(0);" value="">
-                                            </td>
-                                            <td>
-                                                <input type="number" name="quantity[]" id="quantity0"
-                                                    class="form-control rounded" onblur="checkr(0);" value="">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="uom[]" id="uom0" class="form-control rounded"
-                                                    onblur="checkr(0);" value="" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="rate[]" id="rate0"
-                                                    class="form-control rounded" onblur="checkr(0);" value="" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="amount[]" id="amount0"
-                                                    class="form-control rounded" onblur="checkr(0);" value="">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="remark[]" id="remark0"
-                                                    class="form-control rounded" onblur="checkr(0);" value="">
-                                            </td>
+                                                    echo "</select>" . "</td>";
 
+                                                    echo "<td>" 
+                                                        
+                                                        . "<input type='text' id='description0' name='description[]' placeholder='Enter Description' class='form-control input-md' value='" . $row['description'] . "'/>" . "</td>";
+                                                   
+                                                    echo "<td>"
+                                                        . "<input type='text' id='quantity0' name='quantity[]' placeholder='Enter Quantity' class='form-control input-md' value='" . $row['quantity'] . "'/>" . "</td>"; 
+                                                    echo "<td>"
+                                                        . "<input type='text' id='uom0' name='uom[]' placeholder='Enter Uom' class='form-control input-md' value='" . $row['uom'] . "'/>" . 
+                                                     "</td>";
+                                                    echo "<td>" 
+                                                        . "<input type='text' id='rate0' name='rate[]' placeholder='Enter Rate' class='form-control input-md' value='" . $row['rate'] . "'/>" . "</td>";
+                                                     "</td>";
+                                                    echo "<td>" 
+                                                        . "<input type='text' id='amount0' name='amount[]' placeholder='Enter Amount' class='form-control input-md' value='" . $row['amount'] . "' onBlur ='addSum()'/>" . "</td>";
+                                                        "</td>";
+                                                    echo "</tr>";
+                                                    $counter++;
+                                                }
+
+
+
+                                        ?>
 
 
 
                                         </tr>
+
                                         <tr id='addr1'></tr>
                                     </tbody>
                                 </table>
@@ -255,6 +238,10 @@ $i=0;
                         <div class="col-md-6 column pull-right">
                             <button type="submit" class="btn btn-primary me-2 b-right" onclick="saveRecord();">Save
                                 changes</button>
+                            <div id="status_update">
+
+                            </div>
+
                             <a class="btn btn-success me-2 b-right" href="supplier.php">Back</a>
                         </div>
                     </div>
@@ -329,7 +316,23 @@ $i=0;
 <!-- End custom js for this page -->
 
 <script type="text/javascript">
+function status_check() {
+    var status = $('#cstatus').val();
+
+    if (status == 'pending') {
+        $('#status_update').html(
+            '<button type="submit" class="btn btn-primary me-2 b-right" onclick="saveStatus();">Accept</button>'
+        );
+    } else {
+        $('#status_update').html('');
+    }
+}
+
+status_check();
+
 var i = 1;
+
+
 
 function addrow() {
     //td value id increment by 1
@@ -345,16 +348,45 @@ function addrow() {
         ')"  name="rate[]" id="rate' + i +
         '" type="number" class="form-control square" readonly></td><td><input onblur="checkr(' + i +
         ')"  name="amount[]" id="amount' + i +
-        '" type="number" class="form-control square"></td><td><input onblur="checkr(' + i +
-        ')"  name="remark[]" id="remark' + i + '" type="text" class="form-control square"></td>');
+        '" type="number" class="form-control square"></td>');
 
     $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
 
 
     /*1st select content copy */
-    var $options = $("#service > option").clone();
+    //take only first two options and clone it & by default 'select first item' text show in 1st select box
+    // var $options = $('#service').clone().html();
+    // var $options = $('#service').clone().html();
+
+
     // alert($options);
-    $('#service' + i).append($options);
+    // $('#service' + i).append($options);
+
+    //get service_info from database
+    $.ajax({
+        url: "all_service.php",
+        type: "POST",
+        success: function(data) {
+            var obj = JSON.parse(data);
+            console.log(obj);
+            //set value to service
+            var options = '<option value="">Select Item</option>';
+            for (var j = 0; j < obj.length; j++) {
+                console.log(obj[j].serviceid);
+
+
+                options += '<option value="' + obj[j].serviceid + '">' + obj[j].sname +
+                    '</option>';
+
+
+            }
+            $('#service' + (i - 1)).append(options);
+        }
+
+    })
+
+
+
 
     i++;
 
@@ -386,6 +418,36 @@ function chkproblem(id) {
     })
 }
 
+//create a function & sum all amount value & set it to total_budget & it change automatically when amount change without page refresh
+function sum() {
+    var sum = 0;
+    var amount = document.getElementsByName("amount[]");
+    var amountId = [];
+    for (var i = 0; i < amount.length; i++) {
+        amountId.push(amount[i].value);
+    }
+    for (var i = 0; i < amountId.length; i++) {
+        sum = sum + parseInt(amountId[i]);
+    }
+    document.getElementById("total_budget").value = sum;
+
+}
+sum();
+
+function addSum() {
+    var sum = 0;
+    var amount = document.getElementsByName("amount[]");
+    var amountId = [];
+    for (var i = 0; i < amount.length; i++) {
+        amountId.push(amount[i].value);
+    }
+    for (var i = 0; i < amountId.length; i++) {
+        sum = sum + parseInt(amountId[i]);
+    }
+    document.getElementById("total_budget").value = sum;
+
+}
+
 function saveRecord() {
     var service = document.getElementsByName("service[]");
     var description = document.getElementsByName("description[]");
@@ -393,15 +455,12 @@ function saveRecord() {
     var uom = document.getElementsByName("uom[]");
     var rate = document.getElementsByName("rate[]");
     var amount = document.getElementsByName("amount[]");
-    var remark = document.getElementsByName("remark[]");
-
     var serviceid = [];
     var descriptionid = [];
     var quantityid = [];
     var uomid = [];
     var rateid = [];
     var amountid = [];
-    var remarkid = [];
     for (var i = 0; i < service.length; i++) {
 
         serviceid.push(service[i].value);
@@ -410,41 +469,25 @@ function saveRecord() {
         uomid.push(uom[i].value);
         rateid.push(rate[i].value);
         amountid.push(amount[i].value);
-        remarkid.push(remark[i].value);
-
-
     }
 
 
 
-    var rdate = $("#rdate").html();
+    var qdate = $("#qdate").html();
+    var psdate = $("#psdate").val();
+    var pedate = $("#pedate").val();
+    var pduration = $("#pduration").val();
+    var pmanager = $("#pmanager").val();
+    var project_name = $("#project_name").val();
     var cname = $("#cname").html();
-    var mob = $("#mob").html();
-    var cemail = $("#cemail").val();
-    var category = $("#category").val();
-    var caddress = $("#caddress").html();
     var cdescription = $("#cdescription").html();
-    var carea = $("#carea").val();
     var pname = $("#pname").val();
-    var tname = $("#tname").val();
-    var preparedby = '<?php echo $username ?>'
-    var reqid = $("#req_id").val();
-
-    if (cemail == '') {
-        alert("Please Enter Email");
-    }
-    if (category == 'cx') {
-        alert("Please Select Category");
-    }
-    if (carea == '') {
-        alert("Please Select Area");
-    }
-    if (pname == '') {
-        alert("Please Select Payment Mode");
-    }
-    if (tname == '') {
-        alert("Please Select Terms");
-    }
+    var caddress = $("#caddress").val();
+    var carea = $("#carea").val();
+    var cmob = $("#cmob").val();
+    var cemail = $("#cemail").val();
+    var ccategory = $("#ccategory").val();
+    var total_budget = $("#total_budget").val();
 
 
     var form = $('#frmsetup')[0];
@@ -455,48 +498,49 @@ function saveRecord() {
     data.append("uomid", uomid);
     data.append("rateid", rateid);
     data.append("amountid", amountid);
-    data.append("remarkid", remarkid);
-    data.append("rdate", rdate);
+    data.append("qdate", qdate);
+    data.append("psdate", psdate);
+    data.append("pedate", pedate);
+    data.append("pduration", pduration);
+    data.append("pmanager", pmanager);
+    data.append("project_name", project_name);
     data.append("cname", cname);
-    data.append("mob", mob);
-    data.append("cemail", cemail);
-    data.append("category", category);
-    data.append("caddress", caddress);
     data.append("cdescription", cdescription);
-    data.append("carea", carea);
     data.append("pname", pname);
-    data.append("tname", tname);
-    data.append("preparedby", preparedby);
-    data.append("reqid", reqid);
+    data.append("caddress", caddress);
+    data.append("carea", carea);
+    data.append("cmob", cmob);
+    data.append("cemail", cemail);
+    data.append("ccategory", ccategory);
+    data.append("total_budget", total_budget);
+
+
+
+
 
     $.ajax({
-        url: "quotation_insert.php",
+        url: "project_insert.php",
         type: "POST",
         data: data,
         processData: false,
         contentType: false,
         success: function(data) {
-
-            alert('Record Saved Successfully');
-
-            // console.log(data);
+            alert("Project Inserted Successfully");
             window.location.reload();
-
         },
         error: function(data) {
             console.log(data);
-            alert('Record Not Saved');
         }
+
     })
-
-
-
 
 }
 
 function checkr() {
 
 }
+
+
 
 
 

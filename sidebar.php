@@ -20,71 +20,13 @@
     list-style: none !important;
 }
 </style>
-<?php 
-						include_once('databases.php');
-                         $oldheader = "";
-                         $thisheader = "";
-                         $level=$_SESSION['ulevel'];
-                         $output='';
-                         
-                         if ($level=='1') {
-                           $menuquery = "SELECT * FROM menu WHERE status='1' ORDER BY menuorder";  
 
-                         } else if($level=='2') {
-                           $menuquery = "SELECT * FROM menu WHERE status='1' AND access='2' ORDER BY menuorder";  
-                         }else if($level=='3') {
-                           $menuquery = "SELECT * FROM menu WHERE status='1' AND access='3' ORDER BY menuorder";  
-                         }
-                         
-                         
-                         $menuresult = mysqli_query($connection, $menuquery); 
-                         $i = 1;
-                          $output='<ul class="nav sub-menu mt-2"><li class="nav-item nav-category mt-3 mb-3">Main</li><li class="nav-item"><a href="dashboard.php" class="nav-link"><i class="link-icon" data-feather="box"></i><span class="link-title">Dashboard</span></a>
-                          </li><li class="nav-item nav-category mt-3 mb-3">MODULES</li>';
-                         while($row = mysqli_fetch_array($menuresult)){
-                         
-                         $thisheader=$row["head"];
-                         if($thisheader!=="hidden"){
-                        if(strcmp($oldheader, $thisheader)!=0){
-                        if ($i>1){
-                       	$output.='</ul></li>';
-                        
-                        }
-                        $output.='<li class="mb-3 nav-item">';
-                        $output.='<a class="nav-link" data-bs-toggle="collapse" href="#uiComponents'.ucwords($thisheader).'" role="button" aria-expanded="false"
-		                    aria-controls="uiComponents">
-		                    <i class="link-icon" data-feather="truck"></i>
-		                    <span class="link-title">'.ucwords($thisheader).'</span><i class="link-arrow me-3" data-feather="chevron-down"></i></a>';
-                        $output.='<div class="collapse" id="uiComponents'.ucwords($thisheader).'">';
-                        $output.= '<ul class="nav sub-menu">';
-                        
-                        $oldheader = $thisheader;
-                        }
-                          $link = $row["link"];
-                          $text = $row["menutext"];
-                          $filename=$link.".php";
-                          if(strcmp(basename($_SERVER['PHP_SELF']),$filename)!=0){
-                            if($link=='so_view'&&($level=='3'||$level=='4')){
-                              $output.='<li class="nav-item mt-2"><a href="'.$filename.'" class="nav-link">'.$text.'</a></li>';
-                            }else if($link=='user_pass_change'&&($level=='2'||$level=='3'||$level=='4')){
-                              $output.='<li class="nav-item mt-2"><a href="'.$filename.'" class="nav-link">'.$text.'</a></li>';
-                            }else{
-                              $output.='<li class="nav-item mt-2"><a href="'.$filename.'" class="nav-link">'.$text.'</a></li>';
-                            }
-                          }else{
-                          $output.='<li class="nav-item"><a href="#" class="nav-link">'.$text.'</a></li>';
-                          }
-                         
-                           $i++;
-                        }
-                       } 
-                       $output.='</ul>';
-                        $output.='</div>';
-                       ?>
+
+<!-- partial:partials/_sidebar.html -->
 <nav class="sidebar">
     <div class="sidebar-header">
         <a href="#" class="sidebar-brand">
-            CAR<span>CODE</span>
+            P&amp;G<span> TEXTILE</span>
         </a>
         <div class="sidebar-toggler not-active">
             <span></span>
@@ -93,7 +35,75 @@
         </div>
     </div>
     <div class="sidebar-body">
-        <?php echo $output;?>
+        <ul class="nav">
+            <li class="nav-item nav-category">Main</li>
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="link-icon" data-feather="box"></i>
+                    <span class="link-title">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item nav-category">MODULES</li>
+            <?php
+                        require_once('databases.php');
+                         $oldheader = "";
+                         $thisheader = "";
+                         $level=$_SESSION['ulevel'];
+                         $output='';
+                         
+                         if ($level=='1') {
+                           $menuquery = "SELECT * FROM menu WHERE status='Active' ORDER BY menuorder";  
+
+                         } else if($level=='2') {
+                           $menuquery = "SELECT * FROM menu WHERE status='Active' AND access='2' ORDER BY menuorder";  
+                         }else if($level=='3') {
+                           $menuquery = "SELECT * FROM menu WHERE status='Active' AND access='3' ORDER BY menuorder";  
+                         }     
+                         $menuresult = mysqli_query($connection, $menuquery); 
+                         $i=1;
+                        while($row = mysqli_fetch_array($menuresult)){
+                         
+                        $thisheader=$row["head"];
+                        // if($thisheader!=="hidden"){
+                        if(strcmp($oldheader, $thisheader)!=0){
+                        if ($i>1){
+                        ?>
+        </ul>
+    </div>
+    </li>
+    <?php
+                        }          
+          ?>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#<?php echo ucwords($thisheader);?>" role="button"
+            aria-expanded="false" aria-controls="uiComponents">
+            <i class="link-icon" data-feather="<?php echo $row["icon"];?>"></i>
+            <span class="link-title"><?php echo ucwords($thisheader);?></span>
+            <i class="link-arrow" data-feather="chevron-down"></i>
+        </a>
+        <div class="collapse" id="<?php echo ucwords($thisheader);?>">
+            <ul class="nav sub-menu">
+                <?php
+                $oldheader = $thisheader;
+               }
+               $link = $row["link"];
+               $text = $row["menutext"];
+               $filename=$link.".php";
+               ?>
+                <li class="nav-item">
+                    <a href="<?php echo $filename;?>" class="nav-link"><?php echo $text;?></a>
+                </li>
+                <?php
+              $i++;
+              }
+              ?>
+
+            </ul>
+        </div>
+    </li>
+
+
+    </ul>
     </div>
 </nav>
 

@@ -3,19 +3,17 @@ include 'header.php';
 include 'sidebar.php';
 include 'navbar.php';
 include_once('databases.php');
-//get id
-// $id = $_GET['id'];
 ?>
 <div class="page-content">
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">QUOTATION DETAILS</h4>
+            <h4 class="mb-3 mb-md-0">PAYMENT RECEIVE</h4>
         </div>
-        <!-- <div class="d-flex align-items-center flex-wrap text-nowrap">
+        <div class="d-flex align-items-center flex-wrap text-nowrap">
             <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0" data-bs-toggle="modal"
                 data-bs-target="#modalx">Add new</button>
-        </div> -->
+        </div>
 
     </div>
 
@@ -41,40 +39,47 @@ include_once('databases.php');
                                     <thead>
                                         <tr>
                                             <th>Sl No</th>
-                                            <th>Quotation Id</th>
-                                            <th>Date</th>
-                                            <th>Customer Name</th>
-                                            <th>Mobile</th>
+                                            <th>Type</th>
+                                            <th>Name</th>
                                             <th>Address</th>
-                                            <th>Description</th>
+                                            <th>Phone</th>
+                                            <th>Contact Person</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                     
-                                    $query = "SELECT * FROM quotation where status = 'pending' ORDER BY qid DESC";  
+                                    $query = "SELECT * FROM type_details where status = 'pending' ORDER BY tdid DESC";  
                                     $select_result = mysqli_query($connection, $query);
-                                    $i = 0;
                                     //count row > 0
                                     if(mysqli_num_rows($select_result) > 0){
                                         while($row = mysqli_fetch_array($select_result)){      
                                     ?>
                                         <tr>
-                                            <td><?php echo ++$i; ?></td>
-                                            <td><?php echo $row['qid']; ?></td>
-                                            <td><?php echo $row['qdate']; ?></td>
-                                            <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['mobile']; ?></td>
-                                            <td><?php echo $row['address']; ?></td>
-                                            <td><?php echo $row['description']; ?></td>
-
+                                            <td><?php echo $row['tdid']; ?></td>
                                             <td>
-                                                <a href="show_quotation_details.php?id=<?php echo $row['qid']; ?>"
+                                                <?php
+                                                    $tid = $row['tid'];
+                                                    $query1 = "SELECT * FROM type WHERE tid = '$tid'";
+                                                    $select_result1 = mysqli_query($connection, $query1);
+                                                    $row1 = mysqli_fetch_array($select_result1);
+                                                    echo $row1['tname'];
+                                                ?>
+                                            </td>
+                                            <td><?php echo $row['tdname']; ?></td>
+                                            <td><?php echo $row['tdaddress']; ?></td>
+                                            <td><?php echo $row['tdphone']; ?></td>
+                                            <td><?php echo $row['tdcperson']; ?></td>
+                                            <td><?php echo $row['status']; ?></td>
+                                            <td>
+                                                <a href="quotation_details.php?id=<?php echo $row['tdid']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
                                             </td>
 
                                         </tr>
+
                                         <?php }
                                     }else{
                                         echo "<tr><td colspan='10' class='text-center'>No Data Found</td></tr>";
@@ -99,41 +104,47 @@ include_once('databases.php');
                                     <thead>
                                         <tr>
                                             <th>Sl No</th>
-                                            <th>Quotation Id</th>
-                                            <th>Date</th>
-                                            <th>Customer Name</th>
-                                            <th>Mobile</th>
+                                            <th>Type</th>
+                                            <th>Name</th>
                                             <th>Address</th>
-                                            <th>Description</th>
+                                            <th>Phone</th>
+                                            <th>Contact Person</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                     
-                                    $query = "SELECT * FROM quotation where status = 'done' ORDER BY qid DESC";  
+                                    $query = "SELECT * FROM type_details where status = 'done' ORDER BY tdid DESC";  
                                     $select_result = mysqli_query($connection, $query);
                                     //count row > 0
                                     if(mysqli_num_rows($select_result) > 0){
                                         while($row = mysqli_fetch_array($select_result)){      
                                     ?>
                                         <tr>
-                                            <td><?php echo ++$i; ?></td>
-                                            <td><?php echo $row['qid']; ?></td>
-                                            <td><?php echo $row['qdate']; ?></td>
-                                            <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['mobile']; ?></td>
-                                            <td><?php echo $row['address']; ?></td>
-                                            <td><?php echo $row['description']; ?></td>
-
+                                            <td><?php echo $row['tdid']; ?></td>
                                             <td>
-                                                <a href="show_quotation_details.php?id=<?php echo $row['qid']; ?>"
+                                                <?php
+                                                    $tid = $row['tid'];
+                                                    $query1 = "SELECT * FROM type WHERE tid = '$tid'";
+                                                    $select_result1 = mysqli_query($connection, $query1);
+                                                    $row1 = mysqli_fetch_array($select_result1);
+                                                    echo $row1['tname'];
+                                                ?>
+                                            </td>
+                                            <td><?php echo $row['tdname']; ?></td>
+                                            <td><?php echo $row['tdaddress']; ?></td>
+                                            <td><?php echo $row['tdphone']; ?></td>
+                                            <td><?php echo $row['tdcperson']; ?></td>
+                                            <td><?php echo $row['status']; ?></td>
+                                            <td>
+                                                <a href="quotation_details.php?id=<?php echo $row['tdid']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
-                                                <a href="create_project.php?id=<?php echo $row['qid']; ?>"
-                                                    class="btn btn-primary btn-sm">CREATE PROJECT</a>
                                             </td>
 
                                         </tr>
+
                                         <?php }
                                     }else{
                                         echo "<tr><td colspan='10' class='text-center'>No Data Found</td></tr>";
@@ -166,62 +177,57 @@ include_once('databases.php');
 </div>
 
 <!-- Modal -->
-<!-- <div class="modal fade" id="modalx" name="modalx" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalx" name="modalx" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">NEW CUSTOMER</h5>
+                <h5 class="modal-title" id="exampleModalLabel">NEW PAYMENT RECEIVE</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
             </div>
             <div class="modal-body">
                 <form class="forms-sample" id="frmsetup" name="frmsetup">
 
                     <div class="mb-3">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="rfqDate" class="form-label">RFQ Date</label>
-                                <input type="date" class="form-control" id="rfqDate" name="rfqDate"
-                                    placeholder="Request For Quotation Date" value="">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="cname" class="form-label">Customer name</label>
-                                <input type="text" class="form-control" id="cname" name="cname"
-                                    placeholder="Customer name">
-                            </div>
-                        </div>
+                        <label for="cdtype" class="form-label">Type</label>
+                        <select class="form-select" id="cdtype" name="cdtype">
+                            <option value="">Select Type</option>
+                            <?php
+                                    $query = "SELECT * FROM type ORDER BY tid DESC";  
+                                    $select_result = mysqli_query($connection, $query);
+                                    //count row > 0
+                                    if(mysqli_num_rows($select_result) > 0){
+                                        while($row = mysqli_fetch_array($select_result)){      
+                                    ?>
+                            <option value="<?php echo $row['tid']; ?>"><?php echo $row['tname']; ?>
+                            </option>
+                            <?php }
+                                    }else{
+                                        echo "<option value=''>No Data Found</option>";
+                                    }  
+                                     ?>
+                        </select>
+
                     </div>
 
                     <div class="mb-3">
-                        <label for="mobile" class="form-label">Mobile</label>
-                        <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile No">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Name">
                     </div>
                     <div class="mb-3">
                         <label for="address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="address" name="address" placeholder="Address">
+                        <textarea class="form-control" id="address" name="address" placeholder="Description"
+                            rows="2"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="jobDescription" class="form-label">Job Description</label>
-                        <textarea class="form-control" id="jobDescription" name="jobDescription"
-                            placeholder="Job Description" rows="3"></textarea>
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone">
                     </div>
                     <div class="mb-3">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="bestimate" class="form-label">Budget Estimate</label>
-                                <input type="text" class="form-control" id="bestimate" name="bestimate"
-                                    placeholder="Budget Estimate">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="sdate" class="form-label">Survey Date</label>
-                                <input type="date" class="form-control" id="sdate" name="sdate"
-                                    placeholder="Survey Date">
-                            </div>
-                        </div>
+                        <label for="cperson" class="form-label">Contact Person</label>
+                        <input type="text" class="form-control" id="cperson" name="cperson"
+                            placeholder="Contact Person">
                     </div>
-                    <div class="mb-3">
-                        <label for="remarks" class="form-label">Remarks</label>
-                        <input type="text" class="form-control" id="remarks" name="remarks" placeholder="remarks">
-                    </div>
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -230,7 +236,7 @@ include_once('databases.php');
             </div>
         </div>
     </div>
-</div> -->
+</div>
 </div>
 
 <!-- core:js -->
@@ -265,82 +271,44 @@ include_once('databases.php');
 <script src="assets/js/data-table.js"></script>
 <!-- End custom js for this page -->
 <script>
-var today = new Date();
-var date = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate()
-    .toString().padStart(2, '0');
-document.getElementById("rfqDate").value = date;
 </script>
 <script type="text/javascript">
 function addRecord() {
-    alert('nothing')
-    //alert(1);
-    //get value
-    // var rfqDate = $("#rfqDate").val();
-    // var cname = $("#cname").val();
-    // var mobile = $("#mobile").val();
-    // var address = $("#address").val();
-    // var jobDescription = $("#jobDescription").val();
-    // var bestimate = $("#bestimate").val();
-    // var sdate = $("#sdate").val();
-    // var remarks = $("#remarks").val();
+    //Get values from the form
+    var cdtype = $("#cdtype").val();
+    var name = $("#name").val();
+    var address = $("#address").val();
+    var phone = $("#phone").val();
+    var cperson = $("#cperson").val();
 
-    // if (cname == "") {
-    //     alert("Customer Name is required");
-    //     return false;
-    // }
-    // if (mobile == "") {
-    //     alert("Mobile is required");
-    //     return false;
-    // }
-    // if (address == "") {
-    //     alert("Address is required");
-    //     return false;
-    // }
-    // if (jobDescription == "") {
-    //     alert("Job Description is required");
-    //     return false;
-    // }
-    // if (bestimate == "") {
-    //     alert("Budget Estimate is required");
-    //     return false;
-    // }
-    // if (sdate == "") {
-    //     alert("Survey Date is required");
-    //     return false;
-    // }
-    // if (remarks == "") {
-    //     alert("Remarks is required");
-    //     return false;
-    // }
+
+
 
     //Add the quotation details to the database
 
-    // $.ajax({
-    //     url: 'req_quotation_insert.php',
-    //     type: 'POST',
-    //     data: {
-    //         rfqDate: rfqDate,
-    //         cname: cname,
-    //         mobile: mobile,
-    //         address: address,
-    //         jobDescription: jobDescription,
-    //         bestimate: bestimate,
-    //         sdate: sdate,
-    //         remarks: remarks
-    //     },
-    //     success: function(response) {
-    //         if (response == 1) {
-    //             alert("Quotation Added Successfully");
-    //             window.location.reload();
-    //         } else {
-    //             alert("Failed to add Quotation");
-    //         }
-    //     },
-    //     error: function(response) {
-    //         alert("Failed to add Quotation");
-    //     },
+    $.ajax({
+        url: 'create_worker_insert.php',
+        type: 'POST',
+        data: {
+            cdtype: cdtype,
+            name: name,
+            address: address,
+            phone: phone,
+            cperson: cperson,
+        },
+        success: function(response) {
+            if (response == 1) {
+                alert("Payment Receive Added Successfully");
+                window.location.reload();
+            } else {
+                alert("Failed to add Payment Receive");
+            }
+        },
+        error: function(response) {
+            alert("Failed to add Quotation");
+        },
 
-    // });
+    });
 
 
 }

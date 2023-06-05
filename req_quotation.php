@@ -72,8 +72,6 @@ include_once('databases.php');
                                             <td>
                                                 <a href="quotation_details.php?id=<?php echo $row['id']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
-                                                <a href="add_quotation.php?id=<?php echo $row['id']; ?>"
-                                                    class="btn btn-danger btn-sm">Quotations</a>
                                             </td>
 
                                         </tr>

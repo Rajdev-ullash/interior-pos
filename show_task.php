@@ -10,7 +10,7 @@ include_once('databases.php');
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">QUOTATION DETAILS</h4>
+            <h4 class="mb-3 mb-md-0">TASK DETAILS</h4>
         </div>
         <!-- <div class="d-flex align-items-center flex-wrap text-nowrap">
             <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0" data-bs-toggle="modal"
@@ -41,36 +41,54 @@ include_once('databases.php');
                                     <thead>
                                         <tr>
                                             <th>Sl No</th>
-                                            <th>Quotation Id</th>
-                                            <th>Date</th>
-                                            <th>Customer Name</th>
-                                            <th>Mobile</th>
-                                            <th>Address</th>
+                                            <th>Task Name</th>
                                             <th>Description</th>
+                                            <th>Assigned Manger</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                     
-                                    $query = "SELECT * FROM quotation where status = 'pending' ORDER BY qid DESC";  
+                                    $query = "SELECT * FROM project_task where status = '0' ORDER BY taskid DESC";  
                                     $select_result = mysqli_query($connection, $query);
                                     $i = 0;
                                     //count row > 0
                                     if(mysqli_num_rows($select_result) > 0){
                                         while($row = mysqli_fetch_array($select_result)){      
                                     ?>
-                                        <tr>
+                                        <tr class="text-center">
                                             <td><?php echo ++$i; ?></td>
-                                            <td><?php echo $row['qid']; ?></td>
-                                            <td><?php echo $row['qdate']; ?></td>
-                                            <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['mobile']; ?></td>
-                                            <td><?php echo $row['address']; ?></td>
+                                            <td><?php echo $row['taskname']; ?></td>
                                             <td><?php echo $row['description']; ?></td>
+                                            <td>
+                                                <?php
+
+                                                $query = "SELECT * FROM services WHERE serviceid = '".$row['assignedto']."'";
+                                                $result = mysqli_query($connection, $query);
+                                                $service = mysqli_fetch_assoc($result);
+                                                echo $service['sname'];
+                                                
+                                                ?>
+
+                                            </td>
+                                            </td>
+                                            <td><?php echo $row['startdate']; ?></td>
+                                            <td><?php echo $row['enddate']; ?></td>
+                                            <td>
+                                                <?php if($row['status'] == '0'){ ?>
+                                                <span class="text-warning">Pending</span>
+
+                                                <?php }else{ ?>
+                                                <span class="text-success">Done</span>
+                                                <?php } ?>
+                                            </td>
 
                                             <td>
-                                                <a href="show_quotation_details.php?id=<?php echo $row['qid']; ?>"
+                                                <a href="show_quotation_details.php?id=<?php echo $row['taskid']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
                                             </td>
 
@@ -99,19 +117,19 @@ include_once('databases.php');
                                     <thead>
                                         <tr>
                                             <th>Sl No</th>
-                                            <th>Quotation Id</th>
-                                            <th>Date</th>
-                                            <th>Customer Name</th>
-                                            <th>Mobile</th>
-                                            <th>Address</th>
+                                            <th>Task Name</th>
                                             <th>Description</th>
+                                            <th>Assigned Manger</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                     
-                                    $query = "SELECT * FROM quotation where status = 'done' ORDER BY qid DESC";  
+                                    $query = "SELECT * FROM project_task where status = '1' ORDER BY taskid DESC";  
                                     $select_result = mysqli_query($connection, $query);
                                     //count row > 0
                                     if(mysqli_num_rows($select_result) > 0){
@@ -119,18 +137,34 @@ include_once('databases.php');
                                     ?>
                                         <tr>
                                             <td><?php echo ++$i; ?></td>
-                                            <td><?php echo $row['qid']; ?></td>
-                                            <td><?php echo $row['qdate']; ?></td>
-                                            <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['mobile']; ?></td>
-                                            <td><?php echo $row['address']; ?></td>
+                                            <td><?php echo $row['taskname']; ?></td>
                                             <td><?php echo $row['description']; ?></td>
+                                            <td>
+                                                <?php
+
+                                                $query = "SELECT * FROM services WHERE serviceid = '".$row['assignedto']."'";
+                                                $result = mysqli_query($connection, $query);
+                                                $service = mysqli_fetch_assoc($result);
+                                                echo $service['sname'];
+                                                
+                                                ?>
+
+                                            </td>
+                                            </td>
+                                            <td><?php echo $row['startdate']; ?></td>
+                                            <td><?php echo $row['enddate']; ?></td>
+                                            <td>
+                                                <?php if($row['status'] == '0'){ ?>
+                                                <span class="text-warning">Pending</span>
+
+                                                <?php }else{ ?>
+                                                <span class="text-success">Done</span>
+                                                <?php } ?>
+                                            </td>
 
                                             <td>
-                                                <a href="show_quotation_details.php?id=<?php echo $row['qid']; ?>"
+                                                <a href="show_quotation_details.php?id=<?php echo $row['taskid']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
-                                                <a href="create_project.php?id=<?php echo $row['qid']; ?>"
-                                                    class="btn btn-primary btn-sm">CREATE PROJECT</a>
                                             </td>
 
                                         </tr>
