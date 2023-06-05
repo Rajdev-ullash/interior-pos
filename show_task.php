@@ -67,10 +67,10 @@ include_once('databases.php');
                                             <td>
                                                 <?php
 
-                                                $query = "SELECT * FROM services WHERE serviceid = '".$row['assignedto']."'";
+                                                $query = "SELECT * FROM manager WHERE id = '".$row['assignedto']."'";
                                                 $result = mysqli_query($connection, $query);
                                                 $service = mysqli_fetch_assoc($result);
-                                                echo $service['sname'];
+                                                echo $service['name'];
                                                 
                                                 ?>
 
@@ -88,7 +88,7 @@ include_once('databases.php');
                                             </td>
 
                                             <td>
-                                                <a href="show_quotation_details.php?id=<?php echo $row['taskid']; ?>"
+                                                <a href="show_task_details.php?id=<?php echo $row['taskid']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
                                             </td>
 
@@ -163,7 +163,7 @@ include_once('databases.php');
                                             </td>
 
                                             <td>
-                                                <a href="show_quotation_details.php?id=<?php echo $row['taskid']; ?>"
+                                                <a href="show_task_details.php?id=<?php echo $row['taskid']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
                                             </td>
 

@@ -156,25 +156,25 @@ $row = mysqli_fetch_array($result);
                                                     onchange="chkproblem(0)">
                                                     <option disabled selected value>Select Service</option>
                                                     <?php
-                          $query = "SELECT * FROM services ORDER BY serviceid ASC";  
+                          $query = "SELECT * FROM manager ORDER BY id ASC";  
                           $select_result = mysqli_query($connection, $query);  
                           while($row = mysqli_fetch_array($select_result)){
                   ?>
-                                                    <option value="<?php echo $row['serviceid']; ?>">
-                                                        <?php echo $row['sname'];?></option>
+                                                    <option value="<?php echo $row['id']; ?>">
+                                                        <?php echo $row['name'];?></option>
                                                     <?php
                       }
                       ?>
                                                 </select>
                                                 <select class="form-select" name="assign[]" id="assign" hidden>
-                                                    <option disabled selected value>Select Service</option>
+                                                    <option disabled selected value>Select Manager</option>
                                                     <?php
-                                                        $query = "SELECT * FROM services ORDER BY serviceid ASC";  
+                                                        $query = "SELECT * FROM manager ORDER BY id ASC";  
                                                         $select_result = mysqli_query($connection, $query);  
                                                         while($row = mysqli_fetch_array($select_result)){
                                                     ?>
-                                                    <option value="<?php echo $row['serviceid']; ?>">
-                                                        <?php echo $row['sname'];?></option>
+                                                    <option value="<?php echo $row['id']; ?>">
+                                                        <?php echo $row['name'];?></option>
                                                     <?php
                                                     }
                                                     ?>
