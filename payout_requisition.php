@@ -101,7 +101,7 @@ include_once('databases.php');
                                                             aria-label="btn-close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form class="forms-sample" id="frmsetup" name="frmsetup">
+                                                        <form class="forms-sample" id="approveform" name="approveform">
 
                                                             <div class="mb-3">
                                                                 <label for="amount">
@@ -161,7 +161,7 @@ include_once('databases.php');
                                                                 <label for="approveamount">
                                                                     Approved Amount
                                                                 </label>
-                                                                <input type="text" class="form-control"
+                                                                <input type="number" class="form-control"
                                                                     name="approveamount" id="approveamount" value=""
                                                                     placeholder="Approved Amount">
                                                             </div>
@@ -169,8 +169,8 @@ include_once('databases.php');
                                                         </form>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-primary"
-                                                            onclick="approveRecord();">Approve</button>
+                                                        <button type="button" class="btn btn-primary" onclick="approveRecord(<?php 
+                                                                    echo $row['prid']; ?>);">Approve</button>
                                                         <button type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal">Close</button>
                                                     </div>
@@ -207,60 +207,166 @@ include_once('databases.php');
                                     <thead>
                                         <tr>
                                             <th>Sl No</th>
-                                            <th>Payment Receive
-                                                Date</th>
-                                            <th>Customer Name
-                                            </th>
-                                            <th>Reference</th>
-                                            <th>Description</th>
                                             <th>Amount</th>
-                                            <th>Payment Type
-                                            </th>
-                                            <th>Cheque Info</th>
-                                            <th>Cheque Date</th>
+                                            <th>Payee</th>
+                                            <th>Name</th>
+                                            <th>Purpose</th>
+                                            <th>Pay Date</th>
+                                            <th>Approved Amount</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                     
-                                    $query = "SELECT * FROM paymentin where status = 'pending' ORDER BY memo DESC";  
+                                    $query = "SELECT * FROM payment_req where status = 'done' ORDER BY prid DESC";  
                                     $select_result = mysqli_query($connection, $query);
                                     //count row > 0
                                     if(mysqli_num_rows($select_result) > 0){
                                         while($row = mysqli_fetch_array($select_result)){      
                                     ?>
                                         <tr>
-                                            <td><?php echo $row['memo']; ?>
+                                            <td>
+                                                <?php echo $row['prid']; ?>
                                             </td>
-                                            <td><?php echo $row['pdate']; ?>
-                                            </td>
+                                            <td><?php echo $row['amount']; ?></td>
+                                            <td><?php echo $row['payee']; ?></td>
                                             <td>
                                                 <?php
-                                                    $customerid = $row['customerid'];
-                                                    $query1 = "SELECT * FROM customer WHERE customerid = '$customerid'";
-                                                    $select_result1 = mysqli_query($connection, $query1);
-                                                    $row1 = mysqli_fetch_array($select_result1);
-                                                    echo $row1['cname'];
+                                                    $tid = $row['type'];
+                                                    $query2 = "SELECT * FROM type_details WHERE tdid = '$tid'";
+                                                    $result2 = mysqli_query($connection, $query2);
+                                                    $row2 = mysqli_fetch_array($result2);
+                                                    echo $row2['tdname'];
                                                 ?>
                                             </td>
-                                            <td><?php echo $row['ref']; ?>
-                                            </td>
-                                            <td><?php echo $row['description']; ?>
-                                            </td>
-                                            <td><?php echo $row['amount']; ?>
-                                            </td>
-                                            <td><?php echo $row['paytype']; ?>
-                                            </td>
-                                            <td><?php echo $row['chequeinfo']; ?>
-                                            </td>
-                                            <td><?php echo $row['chequedate']; ?>
-                                            </td>
+                                            <td><?php echo $row['purpose']; ?></td>
+                                            <td><?php echo $row['paydate']; ?></td>
+                                            <td><?php echo $row['app_amount']; ?></td>
                                             <td>
-                                                <a href="quotation_details.php?id=<?php echo $row['memo']; ?>"
+                                                <a href="quotation_details.php?id=<?php echo $row['prid']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
+                                                <button type="button" class="btn btn-success btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalx<?php echo $row['prid']; ?>">Pay</button>
                                             </td>
                                         </tr>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="modalx<?php echo $row['prid']; ?>" name="modalx"
+                                            tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">PAY
+                                                            REQUISITION
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="btn-close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="forms-sample" id="payform" name="payform">
+
+                                                            <div class="mb-3">
+                                                                <label for="amount">
+                                                                    Amount
+                                                                </label>
+                                                                <input type="text" class="form-control" name="amount<?php 
+                                                                    echo $row['prid']; ?>" id="amount<?php 
+                                                                    echo $row['prid']; ?>"
+                                                                    value="<?php echo $row['amount']; ?>">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="payee">
+                                                                    Payee
+                                                                </label>
+                                                                <input type="text" class="form-control" name="payee<?php 
+                                                                    echo $row['prid']; ?>" id="payee<?php 
+                                                                    echo $row['prid']; ?>"
+                                                                    value="<?php echo $row['payee']; ?>">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="paydate">
+                                                                    Pay Date
+                                                                </label>
+                                                                <input type="date" class="form-control" name="paydate<?php 
+                                                                    echo $row['prid']; ?>" id="paydate<?php 
+                                                                    echo $row['prid']; ?>"
+                                                                    value="<?php echo $row['paydate']; ?>">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="purpose">
+                                                                    Purpose
+                                                                </label>
+                                                                <input type="text" class="form-control" name="purpose<?php 
+                                                                    echo $row['prid']; ?>" id="purpose<?php 
+                                                                    echo $row['prid']; ?>"
+                                                                    value="<?php echo $row['purpose']; ?>">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="type">
+                                                                    Type Name
+                                                                </label>
+                                                                <select class="form-control" name="type<?php 
+                                                                    echo $row['prid']; ?>" id="type<?php 
+                                                                    echo $row['prid']; ?>">
+                                                                    <option value="<?php echo $row['type']; ?>">
+                                                                        <?php echo $row2['tdname']; ?></option>
+                                                                    <?php
+                                                                            $query3 = "SELECT * FROM type_details";
+                                                                            $result3 = mysqli_query($connection, $query3);
+                                                                            while($row3 = mysqli_fetch_array($result3)){
+                                                                                echo "<option value='".$row3['tdid']."'>".$row3['tdname']."</option>";
+                                                                            }
+                                                                        ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="ptype<?php 
+                                                                    echo $row['prid']; ?>" class="form-label">Payment
+                                                                    Type</label>
+                                                                <select class="form-select" id="ptype<?php 
+                                                                    echo $row['prid']; ?>" name="ptype<?php 
+                                                                    echo $row['prid']; ?>">
+                                                                    <option value="">Select Payment Type</option>
+                                                                    <option value="cash">Cash</option>
+                                                                    <option value="cheque">Cheque</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="cdetails" class="form-label">Check/Cash
+                                                                    Details</label>
+                                                                <input type="text" class="form-control" id="cdetails<?php 
+                                                                    echo $row['prid']; ?>" name="cdetails<?php 
+                                                                    echo $row['prid']; ?>"
+                                                                    placeholder="Check/Cash Details">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="cdates<?php 
+                                                                    echo $row['prid']; ?>"
+                                                                    class="form-label">Check/Cash
+                                                                    Date</label>
+                                                                <input type="date" class="form-control" id="cdates<?php 
+                                                                    echo $row['prid']; ?>" name="cdates<?php 
+                                                                    echo $row['prid']; ?>"
+                                                                    placeholder="Check/Cash Date">
+                                                            </div>
+
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-primary" onclick="payRecord(<?php 
+                                                                    echo $row['prid']; ?>);">Payment</button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+
 
                                         <?php }
                                     }else{
@@ -422,9 +528,6 @@ function addRecord() {
     var purpose = $("#purpose").val();
     var paydate = $("#paydate").val();
 
-
-
-
     //Add the quotation details to the database
 
     $.ajax({
@@ -452,6 +555,92 @@ function addRecord() {
     });
 
 
+}
+
+function approveRecord(id) {
+    // var payid = $("#payid" + id).val();
+    var payamount = $("#amount" + id).val();
+    var payee = $("#payee" + id).val();
+    var type_details = $("#type" + id).val();
+    var purpose = $("#purpose" + id).val();
+    var paydate = $("#paydate" + id).val();
+    var approveamount = $("#approveamount").val();
+
+    //Add the quotation details to the database
+
+    $.ajax({
+        url: 'payment_requisition_approve.php',
+        type: 'POST',
+        data: {
+            payid: id,
+            payamount: payamount,
+            payee: payee,
+            type_details: type_details,
+            purpose: purpose,
+            paydate: paydate,
+            approveamount: approveamount,
+
+
+        },
+        success: function(response) {
+            console.log(response);
+            if (response == 1) {
+                alert("Payment Receive Approved Successfully");
+                window.location.reload();
+            } else {
+                alert("Failed to Approve Payment Receive");
+            }
+        },
+        error: function(response) {
+            alert("Failed to Approve Payment Receive");
+        },
+
+    });
+}
+
+function payRecord(id) {
+    // var payid = $("#payid" + id).val();
+    var payamount = $("#amount" + id).val();
+    var payee = $("#payee" + id).val();
+    var type_details = $("#type" + id).val();
+    var purpose = $("#purpose" + id).val();
+    var paydate = $("#paydate" + id).val();
+    var ptype = $("#ptype" + id).val();
+    var cdetails = $("#cdetails" + id).val();
+    var cdate = $("#cdates" + id).val();
+
+    //Add the quotation details to the database
+
+    $.ajax({
+        url: 'pay_requisition_approve_insert.php',
+        type: 'POST',
+        data: {
+            payid: id,
+            payamount: payamount,
+            payee: payee,
+            type_details: type_details,
+            purpose: purpose,
+            paydate: paydate,
+            ptype: ptype,
+            cdetails: cdetails,
+            cdate: cdate,
+
+
+        },
+        success: function(response) {
+            console.log(response);
+            if (response == 1) {
+                alert("Pay Approved Successfully");
+                // window.location.reload();
+            } else {
+                alert("Failed to Approve Pay");
+            }
+        },
+        error: function(response) {
+            alert("Failed to Approve Pay");
+        },
+
+    });
 }
 </script>
 
