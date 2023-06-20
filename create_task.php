@@ -81,7 +81,7 @@ $row = mysqli_fetch_array($result);
                             $row3 = mysqli_fetch_array($result3);
                             
                             ?>
-                            <label for="cname">Customer Name</label>
+                            <label for="cname">Customer Address</label>
                             <input type="text" class="form-control mt-2" id="caddress" name="caddress" data-input
                                 value="<?php echo $row3['address']; ?>" readonly>
                         </div>
@@ -90,7 +90,7 @@ $row = mysqli_fetch_array($result);
                             <select class="form-select mt-2" id="pmanager" name="pmanager">
                                 <option selected value="cx">project manager</option>
                                 <?php
-                                    $cquery = "SELECT * FROM category ORDER BY id DESC";  
+                                    $cquery = "SELECT * FROM manager ORDER BY id DESC";  
                                     $cresult = mysqli_query($connection, $cquery);  
                                     while($crow = mysqli_fetch_array($cresult)){      
                                     ?>
@@ -154,7 +154,7 @@ $row = mysqli_fetch_array($result);
                                             <td>
                                                 <select class="form-select" name="assign[]" id="assign0"
                                                     onchange="chkproblem(0)">
-                                                    <option disabled selected value>Select Service</option>
+                                                    <option disabled selected value>Select Manager</option>
                                                     <?php
                           $query = "SELECT * FROM manager ORDER BY id ASC";  
                           $select_result = mysqli_query($connection, $query);  
@@ -337,34 +337,34 @@ function addrow() {
     /*1st select content copy */
     //take only first two options and clone it & by default 'select first item' text show in 1st select box
     // var $options = $('#task').clone().html();
-    // var $options = $('#service').clone().html();
+    var $options = $('#assign').clone().html();
 
 
     // alert($options);
-    // $('#service' + i).append($options);
+    $('#assign' + i).append($options);
 
     //get service_info from database
-    $.ajax({
-        url: "all_service.php",
-        type: "POST",
-        success: function(data) {
-            var obj = JSON.parse(data);
-            console.log(obj);
-            //set value to service
-            var options = '<option value="">Select Item</option>';
-            for (var j = 0; j < obj.length; j++) {
-                console.log(obj[j].serviceid);
+    // $.ajax({
+    //     url: "all_service.php",
+    //     type: "POST",
+    //     success: function(data) {
+    //         var obj = JSON.parse(data);
+    //         console.log(obj);
+    //         //set value to service
+    //         var options = '<option value="">Select Manager</option>';
+    //         for (var j = 0; j < obj.length; j++) {
+    //             console.log(obj[j].serviceid);
 
 
-                options += '<option value="' + obj[j].serviceid + '">' + obj[j].sname +
-                    '</option>';
+    //             options += '<option value="' + obj[j].serviceid + '">' + obj[j].sname +
+    //                 '</option>';
 
 
-            }
-            $('#assign' + (i - 1)).append(options);
-        }
+    //         }
+    //         $('#assign' + (i - 1)).append(options);
+    //     }
 
-    })
+    // })
 
 
 
@@ -400,6 +400,7 @@ function addrow() {
 // }
 
 function saveRecord() {
+    var pid = document.getElementById("pid").value;
     var task = document.getElementsByName("task[]");
     var description = document.getElementsByName("description[]");
     var assign = document.getElementsByName("assign[]");
@@ -429,6 +430,7 @@ function saveRecord() {
 
     var form = $('#frmsetup')[0];
     var data = new FormData(form);
+    data.append('pid', pid);
     data.append('taskid', taskid);
     data.append('descriptionid', descriptionid);
     data.append('assignid', assignid);

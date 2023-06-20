@@ -17,6 +17,9 @@ $result = mysqli_query($connection, $query);
 //fetch data from database
 $row = mysqli_fetch_array($result);
 
+$customer_Id = $row['customer'];
+$project_Id = $row['projectid'];
+
 ?>
 <div class="page-content">
 
@@ -78,8 +81,15 @@ $row = mysqli_fetch_array($result);
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex">
-                            Customer Name : <span class="text-uppercase text-danger ms-2"
-                                id="cname"><?php echo $row['customer']; ?></span>
+                            Customer Name : <span class="text-uppercase text-danger ms-2" id="cname">
+                                <?php 
+                                                    //echo customer name from customer table
+                                                    $query2 = "SELECT * FROM customer where customerid = '".$row['customer']."'";
+                                                    $select_result2 = mysqli_query($connection, $query2);
+                                                    $row2 = mysqli_fetch_array($select_result2);
+                                                    echo $row2['cname'];
+                                                ?>
+                            </span>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -173,7 +183,7 @@ $row = mysqli_fetch_array($result);
                                                     echo "<td>" . $counter . "</td>";
                                                     //form td with input field
                                                     echo "<td>" 
-                                                    . "<select class='form-select' id='service0' name='service[]' required>" 
+                                                    . "<select class='form-select' id='service0' name='service[]' required disabled>" 
                                                     . "<option selected value=''>Select Item</option>";
                                                     //database query to fetch item list
                                                     $query = "SELECT * FROM services ORDER BY serviceid DESC";
@@ -190,18 +200,18 @@ $row = mysqli_fetch_array($result);
 
                                                     echo "<td>" 
                                                         
-                                                        . "<input type='text' id='description0' name='description[]' placeholder='Enter Description' class='form-control input-md' value='" . $row['description'] . "'/>" . "</td>";
+                                                        . "<input type='text' id='description0' name='description[]' readonly placeholder='Enter Description' class='form-control input-md' value='" . $row['description'] . "'/>" . "</td>";
                                                    
                                                     echo "<td>"
-                                                        . "<input type='text' id='quantity0' name='quantity[]' placeholder='Enter Quantity' class='form-control input-md' value='" . $row['quantity'] . "'/>" . "</td>"; 
+                                                        . "<input type='text' id='quantity0' readonly name='quantity[]' placeholder='Enter Quantity' class='form-control input-md' value='" . $row['quantity'] . "'/>" . "</td>"; 
                                                     echo "<td>"
-                                                        . "<input type='text' id='uom0' name='uom[]' placeholder='Enter Uom' class='form-control input-md' value='" . $row['uom'] . "'/>" . 
+                                                        . "<input type='text' id='uom0' name='uom[]' readonly placeholder='Enter Uom' class='form-control input-md' value='" . $row['uom'] . "'/>" . 
                                                      "</td>";
                                                     echo "<td>" 
-                                                        . "<input type='text' id='rate0' name='rate[]' placeholder='Enter Rate' class='form-control input-md' value='" . $row['rate'] . "'/>" . "</td>";
+                                                        . "<input type='text' id='rate0' name='rate[]' readonly placeholder='Enter Rate' class='form-control input-md' value='" . $row['rate'] . "'/>" . "</td>";
                                                      "</td>";
                                                     echo "<td>" 
-                                                        . "<input type='text' id='amount0' name='amount[]' placeholder='Enter Amount' class='form-control input-md' value='" . $row['amount'] . "' onBlur ='addSum()'/>" . "</td>";
+                                                        . "<input type='text' id='amount0' name='amount[]' readonly placeholder='Enter Amount' class='form-control input-md' value='" . $row['amount'] . "' onBlur ='addSum()'/>" . "</td>";
                                                         "</td>";
                                                     echo "</tr>";
                                                     $counter++;
@@ -222,19 +232,98 @@ $row = mysqli_fetch_array($result);
                         </div>
                     </form>
                     <hr>
+                    <div class="row mt-3">
+                        <div class="col-md-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Task List</h6>
+                                    <div class="table-responsive" id="datagrid">
+                                        <table id="" class="table table-hover table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sl No</th>
+                                                    <th>Task Name</th>
+                                                    <th>Description</th>
+                                                    <th>Assigned Manger</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                    
+                                    $query = "SELECT * FROM project_task WHERE pid = '$id'";  
+                                    $select_result = mysqli_query($connection, $query);
+                                    //count row > 0
+                                    if(mysqli_num_rows($select_result) > 0){
+                                        while($row = mysqli_fetch_array($select_result)){      
+                                    ?>
+                                                <tr>
+                                                    <td><?php echo ++$i; ?></td>
+                                                    <td><?php echo $row['taskname']; ?></td>
+                                                    <td><?php echo $row['description']; ?></td>
+                                                    <td>
+                                                        <?php
+
+                                                $query = "SELECT * FROM services WHERE serviceid = '".$row['assignedto']."'";
+                                                $result = mysqli_query($connection, $query);
+                                                $service = mysqli_fetch_assoc($result);
+                                                echo $service['sname'];
+                                                
+                                                ?>
+
+                                                    </td>
+                                                    </td>
+                                                    <td><?php echo $row['startdate']; ?></td>
+                                                    <td><?php echo $row['enddate']; ?></td>
+                                                    <td>
+                                                        <?php if($row['status'] == '0'){ ?>
+                                                        <span class="text-warning">Pending</span>
+
+                                                        <?php }else{ ?>
+                                                        <span class="text-success">Done</span>
+                                                        <?php } ?>
+                                                    </td>
+
+                                                    <td>
+                                                        <a href="show_task_details.php?id=<?php echo $row['taskid']; ?>"
+                                                            class="btn btn-primary btn-sm">Details</a>
+                                                    </td>
+
+                                                </tr>
+                                                <?php }
+                                    }else{
+                                        echo "<tr><td colspan='10' class='text-center'>No Data Found</td></tr>";
+                                    }  
+                                     ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6 column text-left">
-                            <button id="add_row" class="btn btn-danger" onclick="addrow();">Add Row</button>
-                            <button id="delete_row" class="btn btn-danger" onclick="delrow();">Remove Row</button>
+                            <!-- <button id="add_row" class="btn btn-danger" onclick="addrow();">Add Row</button> -->
+                            <!-- <button id="delete_row" class="btn btn-danger" onclick="delrow();">Remove Row</button> -->
                         </div>
                         <div class="col-md-6 column pull-right">
-                            <button type="submit" class="btn btn-primary me-2 b-right" onclick="saveRecord();">Save
-                                changes</button>
-                            <div id="status_update">
+                            <a class="btn btn-success me-2 b-right"
+                                href="customer_ledger.php?id=<?php echo $customer_Id ?>">Customer Ledger</a>
+                            <a class="btn btn-success me-2 b-right" href="supplier.php">Close Project</a>
+                            <a class="btn btn-success me-2 b-right"
+                                href="invoice_info.php?id=<?php echo $project_Id ?>">Create Invoice</a>
 
-                            </div>
+                            <!-- <button type="submit" class="btn btn-primary me-2 b-right" onclick="saveRecord();">Save
+                                changes</button> -->
+                            <!-- <div id="status_update">
 
-                            <a class="btn btn-success me-2 b-right" href="supplier.php">Back</a>
+                            </div> -->
+
+                            <!-- <a class="btn btn-success me-2 b-right" href="supplier.php">Back</a> -->
                         </div>
                     </div>
 
@@ -539,7 +628,6 @@ function saveRecord() {
         processData: false,
         contentType: false,
         success: function(data) {
-            // console.log(data);
             alert("Project Updated Successfully");
             window.location.reload();
         },

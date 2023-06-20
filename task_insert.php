@@ -6,6 +6,7 @@ die("Database connection failed".mysqli_connect_errno()."(".mysqli_connect_error
 
 If(!empty($_POST)){
 	//insert into database
+    $pid = mysqli_real_escape_string($connection, $_POST["pid"]);
     $taskid = mysqli_real_escape_string($connection, $_POST["taskid"]);
     $task = explode(",", $taskid);
 
@@ -26,7 +27,7 @@ If(!empty($_POST)){
 
 
     for($i=0; $i<count($task); $i++){
-        $query = "INSERT INTO project_task (taskname, description, assignedto, startdate, enddate, status) VALUES ('$task[$i]', '$description[$i]', '$assign[$i]', '$sdate[$i]', '$edate[$i]', '$status[$i]')";
+        $query = "INSERT INTO project_task (taskname, description, assignedto, startdate, enddate,pid, status) VALUES ('$task[$i]', '$description[$i]', '$assign[$i]', '$sdate[$i]', '$edate[$i]','$pid', '$status[$i]')";
         if (mysqli_query($connection, $query)) {
             echo "New record created successfully";
         } else {

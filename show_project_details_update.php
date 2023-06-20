@@ -65,10 +65,10 @@ If(!empty($_POST)){
         //last id
         $last_id = mysqli_insert_id($connection);
 
-        $query2 = "DELETE FROM projectdetails WHERE projectidf = '$id'";
+        $query2 = "DELETE FROM projectdetail WHERE projectidf = '$id'";
        if(mysqli_query($connection, $query2)){
         for($i = 0; $i < count($service); $i++){
-            $query3 = "INSERT INTO projectdetails(projectidf, service, description, quantity, uom, rate, amount) VALUES ('$id', '$service[$i]', '$description[$i]', '$quantity[$i]', '$uom[$i]', '$rate[$i]', '$amount[$i]')";
+            $query3 = "INSERT INTO projectdetail(projectidf, service, description, quantity, uom, rate, amount) VALUES ('$id', '$service[$i]', '$description[$i]', '$quantity[$i]', '$uom[$i]', '$rate[$i]', '$amount[$i]')";
             $result3 = mysqli_query($connection, $query3);
             if(!$result3){
                 die("Database query failed.");
