@@ -109,7 +109,23 @@ function numberTowords(float $amount)
                $gtotal = $row["total"];
                $adv = $row["advance"];
                $dis = $row["discount"];
-               $due = $gtotal-$adv-$dis;
+               //first take all invoice about this project
+                $query = "SELECT * FROM invoice WHERE project_id=$inv";
+                $result = mysqli_query($connection, $query);
+                $counter = 1;
+                $due_adv = 0;
+                $due_dis = 0;
+
+                //run a for loop of for sum advance and discount
+                foreach ($result as $row ) {
+                    $due_adv += $row['advance'];
+                    $due_dis += $row['discount'];
+                }
+
+                //now calculate the due is total - (advance + discount)
+
+                $due = $gtotal - ($due_adv + $due_dis);
+                
                $grandtotal = $row["grand_total"];
               
              }

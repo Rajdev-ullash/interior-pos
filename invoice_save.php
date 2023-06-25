@@ -21,6 +21,11 @@ If(!empty($_POST)){
     $invoice_date = date("Y-m-d");
     //invoice status is pending
     $status = 'done';
+
+    //convert advance into integer with parseInt
+    $advance = (int)$advance;
+    
+
     
    
     
@@ -28,6 +33,18 @@ If(!empty($_POST)){
     $query = "INSERT INTO invoice(invoice_no, invoice_date, customer_id, project_id, total, discount, advance,grand_total, status) VALUES ('$invoice_id', '$invoice_date', '$customer_id', '$project_id', '$total', '$discount', '$advance','$grand_total', '$status')";
 
     if(mysqli_query($connection, $query)){
+        //update into customer ledger table to dr to advances
+        $query = "UPDATE customer_ledger SET dr = dr + '$advance' WHERE customerid = '$customer_id'";
+        mysqli_query($connection, $query);
+        
+        if(mysqli_query($connection, $query)){
+            echo "Success";
+        }
+        else{
+            echo("Error description: " . mysqli_error($connection));
+        }
+
+
         echo '1';
     }
     else{
