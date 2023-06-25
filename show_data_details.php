@@ -66,7 +66,7 @@ $project_Id = $row['projectid'];
                             <select class="form-select mt-2" id="pmanager" name="pmanager">
                                 <option selected value="cx">project manager</option>
                                 <?php
-                                    $cquery = "SELECT * FROM category ORDER BY id DESC";  
+                                    $cquery = "SELECT * FROM manager ORDER BY id DESC";  
                                     $cresult = mysqli_query($connection, $cquery);  
                                     while($crow = mysqli_fetch_array($cresult)){      
                                     ?>

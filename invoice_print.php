@@ -84,7 +84,7 @@ function numberTowords(float $amount)
         <?php
               $inv = $_GET["id"];         
               
-              $masterquery = "SELECT * FROM invoice WHERE project_id=$inv";  
+              $masterquery = "SELECT * FROM invoice WHERE project_id=$inv ORDER BY invoice_no DESC LIMIT 1";  
               $masterresult = mysqli_query($connection, $masterquery);  
 
              while($row = mysqli_fetch_array($masterresult)) {

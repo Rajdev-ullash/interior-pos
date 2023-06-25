@@ -11,7 +11,7 @@ $username = $_SESSION['user'];
 //get id from url
 $id = $_GET['id'];
 //select data from database
-$query = "SELECT * FROM project WHERE projectid = $id";
+$query = "SELECT * FROM project WHERE projectid = $id ";
 //execute query
 $result = mysqli_query($connection, $query);
 //fetch data from database
@@ -27,10 +27,16 @@ $query3 = "SELECT * FROM customer_ledger where customerid = $customer_Id";
 $select_result3 = mysqli_query($connection, $query3);
 $row3 = mysqli_fetch_array($select_result3);
 
-$query4 = "SELECT * FROM invoice where project_id = $id";
+$query4 = "SELECT * FROM invoice where project_id = $id ORDER BY invoice_no DESC LIMIT 1";
 $select_result4 = mysqli_query($connection, $query4);
 $row4 = mysqli_fetch_array($select_result4);
 $check_status = $row4['status'];
+
+
+
+
+
+
 
 
 
@@ -199,6 +205,18 @@ $check_status = $row4['status'];
 
                                                 </td>
                                             </tr>
+                                            <?php
+                                                if($row4['project_id'] == $id){
+                                                    //show due
+                                                    echo "<tr>";
+                                                    echo "<td>Due</td>";
+                                                    echo "<td>";
+                                                    echo "<input type='text' id='due' name='due' readonly placeholder='Due' class='form-control input-md' value='" . $row4['grand_total'] . "'/>";
+                                                    echo "</td>";
+                                                    echo "</tr>";
+                                                    
+                                                }
+                                                ?>
                                             <tr>
                                                 <td>Advance</td>
                                                 <td>
@@ -340,7 +358,7 @@ function status_check() {
     if (status == 'done') {
         //disable save button
         $('#print').html(
-            '<a class="btn btn-success me-2 b-right" href="invoice_print.php?id=<?php echo $customer_Id ?>" target="_blank">Print</a>'
+            '<a class="btn btn-success me-2 b-right" onclick="saveData3()" href="invoice_print.php?id=<?php echo $customer_Id ?>" target="_blank">Print</a>'
         );
 
         $('#save').html('');
@@ -364,8 +382,20 @@ function g_total() {
     var discount = $('#discount').val();
     var advance = $('#advance').val();
     var g_total = 0;
-    var g_total = total - discount - advance;
-    $('#grand_total').val(g_total);
+    //check if due is exist
+    if ('#due' != '') {
+        var due = $('#due').val();
+        //convert due to number
+        due = parseInt(due);
+        console.log(due);
+        g_total = due - discount - advance;
+        console.log(g_total);
+        $('#grand_total').val(g_total);
+    } else {
+        g_total = total - discount - advance;
+        $('#grand_total').val(g_total);
+    }
+
 }
 
 g_total();
@@ -643,6 +673,62 @@ function saveData() {
             alert("Invoice Created Successfully");
             // window.location.href = "invoice.php";
             window.location.reload();
+        },
+        error: function(data) {
+            console.log(data);
+        }
+
+    })
+
+
+
+}
+
+function saveData3() {
+    //take customer id
+    var customer_Id = <?php echo $customer_Id ?>;
+    console.log(customer_Id);
+
+    //take project id
+    var project_id = <?php echo $id ?>;
+    console.log(project_id);
+
+    //take total
+    var total = $("#total").val();
+
+    //take discount
+    var discount = $("#discount").val();
+
+    //take advance
+    var advance = $("#advance").val();
+
+    //grand total
+    var grand_total = $("#grand_total").val();
+
+    if (discount == "") {
+        discount = 0;
+    }
+    if (advance == "") {
+        advance = 0;
+    }
+    if (grand_total == "") {
+        grand_total = 0;
+    }
+    $.ajax({
+        url: "invoice_save.php",
+        type: "POST",
+        data: {
+            customer_id: customer_Id,
+            project_id: project_id,
+            total: total,
+            discount: discount,
+            advance: advance,
+            grand_total: grand_total
+        },
+        success: function(data) {
+            alert("Invoice Created Successfully");
+            // window.location.href = "invoice.php";
+            window.location.href = "invoice_print.php?id=<?php echo $customer_Id ?>";
         },
         error: function(data) {
             console.log(data);

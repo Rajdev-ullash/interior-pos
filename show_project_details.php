@@ -63,7 +63,7 @@ $row = mysqli_fetch_array($result);
                             <select class="form-select mt-2" id="pmanager" name="pmanager">
                                 <option selected value="cx">project manager</option>
                                 <?php
-                                    $cquery = "SELECT * FROM category ORDER BY id DESC";  
+                                    $cquery = "SELECT * FROM manager ORDER BY id DESC";  
                                     $cresult = mysqli_query($connection, $cquery);  
                                     while($crow = mysqli_fetch_array($cresult)){      
                                     ?>
@@ -78,8 +78,16 @@ $row = mysqli_fetch_array($result);
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex">
-                            Customer Name : <span class="text-uppercase text-danger ms-2"
-                                id="cname"><?php echo $row['customer']; ?></span>
+                            Customer Name : <span class="text-uppercase text-danger ms-2" id="cname">
+                                <?php
+                                $cid = $row['customer'];
+                                $cquery = "SELECT * FROM customer WHERE customerid = $cid";
+                                $cresult = mysqli_query($connection, $cquery);
+                                $crow = mysqli_fetch_array($cresult);
+                                echo $crow['cname'];
+                                ?>
+
+                            </span>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -491,7 +499,7 @@ function saveRecord() {
     var pduration = $("#pduration").val();
     var pmanager = $("#pmanager").val();
     var project_name = $("#project_name").val();
-    var cname = $("#cname").html();
+    var cname = <?php echo $cid ?>;
     var cdescription = $("#cdescription").html();
     var pname = $("#pname").val();
     var caddress = $("#caddress").val();
