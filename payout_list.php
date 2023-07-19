@@ -8,12 +8,12 @@ include_once('databases.php');
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">PAYMENT RECEIVE</h4>
+            <h4 class="mb-3 mb-md-0">PAYOUT LIST</h4>
         </div>
-        <div class="d-flex align-items-center flex-wrap text-nowrap">
+        <!-- <div class="d-flex align-items-center flex-wrap text-nowrap">
             <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0" data-bs-toggle="modal"
                 data-bs-target="#modalx">Add new</button>
-        </div>
+        </div> -->
 
     </div>
 
@@ -28,18 +28,20 @@ include_once('databases.php');
                             <thead>
                                 <tr>
                                     <th>Sl No</th>
+                                    <th>Pay Date</th>
                                     <th>Amount</th>
                                     <th>Payee</th>
-                                    <th>Name</th>
                                     <th>Purpose</th>
-                                    <th>Pay Date</th>
-                                    <th>Action</th>
+                                    <th>Type</th>
+                                    <th>Payment Type</th>
+                                    <th>Cheque Details</th>
+                                    <th>Cheque Date</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                     
-                                    $query = "SELECT * FROM payment_req ORDER BY prid DESC";  
+                                    $query = "SELECT * FROM payout ORDER BY payoutid DESC";  
                                     $select_result = mysqli_query($connection, $query);
                                     //count row > 0
                                     $i = 0;
@@ -50,8 +52,10 @@ include_once('databases.php');
                                     <td>
                                         <?php echo ++$i; ?>
                                     </td>
+                                    <td><?php echo $row['paydate']; ?></td>
                                     <td><?php echo $row['amount']; ?></td>
                                     <td><?php echo $row['payee']; ?></td>
+                                    <td><?php echo $row['purpose']; ?></td>
                                     <td>
                                         <?php
                                                     $tid = $row['type'];
@@ -61,17 +65,10 @@ include_once('databases.php');
                                                     echo $row2['tdname'];
                                                 ?>
                                     </td>
-                                    <td><?php echo $row['purpose']; ?></td>
-                                    <td><?php echo $row['paydate']; ?></td>
-                                    <td>
-                                        <a href="quotation_details.php?id=<?php echo $row['prid']; ?>"
-                                            class="btn btn-primary btn-sm">Details</a>
-                                        <!-- <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#modalx<?php echo $row['prid']; ?>">Approve</button> -->
+                                    <td><?php echo $row['ptype']; ?></td>
+                                    <td><?php echo $row['chequeinfo']; ?></td>
+                                    <td><?php echo $row['chequedate']; ?></td>
 
-
-
-                                    </td>
 
 
 
@@ -319,129 +316,6 @@ $('#type').change(function() {
         }
     });
 });
-
-function addRecord() {
-    //Get values from the form
-    var payamount = $("#payamount").val();
-    var payee = $("#payee").val();
-    var type_details = $("#type_details").val();
-    var purpose = $("#purpose").val();
-    var paydate = $("#paydate").val();
-
-    //Add the quotation details to the database
-
-    $.ajax({
-        url: 'payment_requisition_insert.php',
-        type: 'POST',
-        data: {
-            payamount: payamount,
-            payee: payee,
-            type_details: type_details,
-            purpose: purpose,
-            paydate: paydate,
-        },
-        success: function(response) {
-            if (response == 1) {
-                alert("Payment Receive Added Successfully");
-                window.location.reload();
-            } else {
-                alert("Failed to add Payment Receive");
-            }
-        },
-        error: function(response) {
-            alert("Failed to add Quotation");
-        },
-
-    });
-
-
-}
-
-function approveRecord(id) {
-    // var payid = $("#payid" + id).val();
-    var payamount = $("#amount" + id).val();
-    var payee = $("#payee" + id).val();
-    var type_details = $("#type" + id).val();
-    var purpose = $("#purpose" + id).val();
-    var paydate = $("#paydate" + id).val();
-    var approveamount = $("#approveamount").val();
-
-    //Add the quotation details to the database
-
-    $.ajax({
-        url: 'payment_requisition_approve.php',
-        type: 'POST',
-        data: {
-            payid: id,
-            payamount: payamount,
-            payee: payee,
-            type_details: type_details,
-            purpose: purpose,
-            paydate: paydate,
-            approveamount: approveamount,
-
-
-        },
-        success: function(response) {
-            console.log(response);
-            if (response == 1) {
-                alert("Payment Receive Approved Successfully");
-                window.location.reload();
-            } else {
-                alert("Failed to Approve Payment Receive");
-            }
-        },
-        error: function(response) {
-            alert("Failed to Approve Payment Receive");
-        },
-
-    });
-}
-
-function payRecord(id) {
-    // var payid = $("#payid" + id).val();
-    var payamount = $("#amount" + id).val();
-    var payee = $("#payee" + id).val();
-    var type_details = $("#type" + id).val();
-    var purpose = $("#purpose" + id).val();
-    var paydate = $("#paydate" + id).val();
-    var ptype = $("#ptype" + id).val();
-    var cdetails = $("#cdetails" + id).val();
-    var cdate = $("#cdates" + id).val();
-
-    //Add the quotation details to the database
-
-    $.ajax({
-        url: 'pay_requisition_approve_insert.php',
-        type: 'POST',
-        data: {
-            payid: id,
-            payamount: payamount,
-            payee: payee,
-            type_details: type_details,
-            purpose: purpose,
-            paydate: paydate,
-            ptype: ptype,
-            cdetails: cdetails,
-            cdate: cdate,
-
-
-        },
-        success: function(response) {
-            console.log(response);
-            if (response == 1) {
-                alert("Pay Approved Successfully");
-                // window.location.reload();
-            } else {
-                alert("Failed to Approve Pay");
-            }
-        },
-        error: function(response) {
-            alert("Failed to Approve Pay");
-        },
-
-    });
-}
 </script>
 
 </body>

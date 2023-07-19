@@ -28,6 +28,10 @@ include_once('databases.php');
             <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile"
                 aria-selected="false">Done</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="reject-tab" data-bs-toggle="tab" href="#reject" role="tab" aria-controls="reject"
+                aria-selected="false">Rejected</a>
+        </li>
     </ul>
     <div class="tab-content border border-top-0 p-3" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -131,6 +135,65 @@ include_once('databases.php');
                                                     class="btn btn-primary btn-sm">Details</a>
                                                 <a href="create_project.php?id=<?php echo $row['qid']; ?>"
                                                     class="btn btn-primary btn-sm">CREATE PROJECT</a>
+                                            </td>
+
+                                        </tr>
+                                        <?php }
+                                    }else{
+                                        echo "<tr><td colspan='10' class='text-center'>No Data Found</td></tr>";
+                                    }  
+                                     ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="reject" role="tabpanel" aria-labelledby="reject-tab">
+            <div class="row mt-3">
+                <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Data Table</h6>
+                            <div class="table-responsive" id="datagrid">
+                                <table id="dataTableExample" class="table table-hover table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl No</th>
+                                            <th>Quotation Id</th>
+                                            <th>Date</th>
+                                            <th>Customer Name</th>
+                                            <th>Mobile</th>
+                                            <th>Address</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                    
+                                    $query = "SELECT * FROM quotation where status = 'reject' ORDER BY qid DESC";  
+                                    $select_result = mysqli_query($connection, $query);
+                                    //count row > 0
+                                    if(mysqli_num_rows($select_result) > 0){
+                                        while($row = mysqli_fetch_array($select_result)){      
+                                    ?>
+                                        <tr>
+                                            <td><?php echo ++$i; ?></td>
+                                            <td><?php echo $row['qid']; ?></td>
+                                            <td><?php echo $row['qdate']; ?></td>
+                                            <td><?php echo $row['customer']; ?></td>
+                                            <td><?php echo $row['mobile']; ?></td>
+                                            <td><?php echo $row['address']; ?></td>
+                                            <td><?php echo $row['description']; ?></td>
+
+                                            <td>
+                                                <a href="show_quotation_details.php?id=<?php echo $row['qid']; ?>"
+                                                    class="btn btn-primary btn-sm">Details</a>
+                                                <!-- <a href="create_project.php?id="
+                                                    class="btn btn-primary btn-sm">CREATE PROJECT</a> -->
                                             </td>
 
                                         </tr>

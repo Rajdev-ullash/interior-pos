@@ -3,14 +3,12 @@ include 'header.php';
 include 'sidebar.php';
 include 'navbar.php';
 include_once('databases.php');
-//get id
-// $id = $_GET['id'];
 ?>
 <div class="page-content">
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">PROJECT DETAILS</h4>
+            <h4 class="mb-3 mb-md-0">RFQ LIST</h4>
         </div>
         <!-- <div class="d-flex align-items-center flex-wrap text-nowrap">
             <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0" data-bs-toggle="modal"
@@ -28,6 +26,7 @@ include_once('databases.php');
             <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile"
                 aria-selected="false">Done</a>
         </li>
+
     </ul>
     <div class="tab-content border border-top-0 p-3" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -41,45 +40,38 @@ include_once('databases.php');
                                     <thead>
                                         <tr>
                                             <th>Sl No</th>
-                                            <th>Project Name</th>
+                                            <th>RFQ Date</th>
                                             <th>Customer Name</th>
-                                            <th>Date</th>
-                                            <th>Payment Mode</th>
-                                            <th>Project Start Date</th>
-                                            <th>Project End Date</th>
-                                            <th>Project Duration</th>
-                                            <th>Project Manager</th>
+                                            <th>Mobile</th>
+                                            <th>Address</th>
+                                            <th>Job Description</th>
+                                            <th>Budget Estimate</th>
+                                            <th>Survey date</th>
+                                            <th>Remark</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                     
-                                    $query = "SELECT * FROM project where status = 'pending' ORDER BY projectid DESC";  
+                                    $query = "SELECT * FROM rfp where status = 'pending' ORDER BY id DESC";  
                                     $select_result = mysqli_query($connection, $query);
-                                    $i = 0;
                                     //count row > 0
                                     if(mysqli_num_rows($select_result) > 0){
                                         while($row = mysqli_fetch_array($select_result)){      
                                     ?>
                                         <tr>
-                                            <td><?php echo ++$i; ?></td>
-                                            <td><?php echo $row['projectname']; ?></td>
+                                            <td><?php echo $row['id']; ?></td>
+                                            <td><?php echo $row['rdate']; ?></td>
                                             <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['datecreated']; ?></td>
-                                            <td><?php echo $row['paymentmode']; ?></td>
-                                            <td><?php echo $row['startdate']; ?></td>
-                                            <td><?php echo $row['enddate']; ?></td>
-                                            <td><?php echo $row['duration']; ?></td>
-                                            <?php
-                                            $query = "SELECT * FROM category where id = '".$row['pm']."'";
-                                            $select_result1 = mysqli_query($connection, $query);
-                                            $row1 = mysqli_fetch_array($select_result1);
-                                            ?>
-                                            <td><?php echo $row1['name']; ?></td>
-
+                                            <td><?php echo $row['mob']; ?></td>
+                                            <td><?php echo $row['address']; ?></td>
+                                            <td><?php echo $row['description']; ?></td>
+                                            <td><?php echo $row['budget']; ?></td>
+                                            <td><?php echo $row['surveryschedule']; ?></td>
+                                            <td><?php echo $row['remarks']; ?></td>
                                             <td>
-                                                <a href="show_project_details.php?id=<?php echo $row['projectid']; ?>"
+                                                <a href="quotation_details.php?id=<?php echo $row['id']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
                                             </td>
 
@@ -108,50 +100,41 @@ include_once('databases.php');
                                     <thead>
                                         <tr>
                                             <th>Sl No</th>
-                                            <th>Project Name</th>
+                                            <th>RFQ Date</th>
                                             <th>Customer Name</th>
-                                            <th>Date</th>
-                                            <th>Payment Mode</th>
-                                            <th>Project Start Date</th>
-                                            <th>Project End Date</th>
-                                            <th>Project Duration</th>
-                                            <th>Project Manager</th>
+                                            <th>Mobile</th>
+                                            <th>Address</th>
+                                            <th>Job Description</th>
+                                            <th>Budget Estimate</th>
+                                            <th>Survey date</th>
+                                            <th>Remark</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                     
-                                    $query = "SELECT * FROM project where status = 'done' ORDER BY projectid DESC";  
+                                    $query = "SELECT * FROM rfp where status = 'done' ORDER BY id DESC";  
                                     $select_result = mysqli_query($connection, $query);
-                                    $i = 0;
                                     //count row > 0
                                     if(mysqli_num_rows($select_result) > 0){
                                         while($row = mysqli_fetch_array($select_result)){      
                                     ?>
                                         <tr>
-                                            <td><?php echo ++$i; ?></td>
-                                            <td><?php echo $row['projectname']; ?></td>
+                                            <td><?php echo $row['id']; ?></td>
+                                            <td><?php echo $row['rdate']; ?></td>
                                             <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['datecreated']; ?></td>
-                                            <td><?php echo $row['paymentmode']; ?></td>
-                                            <td><?php echo $row['startdate']; ?></td>
-                                            <td><?php echo $row['enddate']; ?></td>
-                                            <td><?php echo $row['duration']; ?></td>
-                                            <?php
-                                            $query = "SELECT * FROM category where id = '".$row['pm']."'";
-                                            $select_result1 = mysqli_query($connection, $query);
-                                            $row1 = mysqli_fetch_array($select_result1);
-                                            ?>
-                                            <td><?php echo $row1['name']; ?></td>
-
+                                            <td><?php echo $row['mob']; ?></td>
+                                            <td><?php echo $row['address']; ?></td>
+                                            <td><?php echo $row['description']; ?></td>
+                                            <td><?php echo $row['budget']; ?></td>
+                                            <td><?php echo $row['surveryschedule']; ?></td>
+                                            <td><?php echo $row['remarks']; ?></td>
                                             <td>
-                                                <a href="show_project_details.php?id=<?php echo $row['projectid']; ?>"
+                                                <a href="quotation_details.php?id=<?php echo $row['id']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
-                                                <a href="create_task.php?id=<?php echo $row['projectid']; ?>"
-                                                    class="btn btn-primary btn-sm">CREATE TASK</a>
-                                                <a href="show_task_info.php?id=<?php echo $row['projectid']; ?>"
-                                                    class="btn btn-primary btn-sm">SHOW TASK</a>
+                                                <a href="add_quotation.php?id=<?php echo $row['id']; ?>"
+                                                    class="btn btn-danger btn-sm">Quotations</a>
                                             </td>
 
                                         </tr>
@@ -187,7 +170,7 @@ include_once('databases.php');
 </div>
 
 <!-- Modal -->
-<!-- <div class="modal fade" id="modalx" name="modalx" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalx" name="modalx" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -251,7 +234,7 @@ include_once('databases.php');
             </div>
         </div>
     </div>
-</div> -->
+</div>
 </div>
 
 <!-- core:js -->
@@ -293,75 +276,74 @@ document.getElementById("rfqDate").value = date;
 </script>
 <script type="text/javascript">
 function addRecord() {
-    alert('nothing')
     //alert(1);
     //get value
-    // var rfqDate = $("#rfqDate").val();
-    // var cname = $("#cname").val();
-    // var mobile = $("#mobile").val();
-    // var address = $("#address").val();
-    // var jobDescription = $("#jobDescription").val();
-    // var bestimate = $("#bestimate").val();
-    // var sdate = $("#sdate").val();
-    // var remarks = $("#remarks").val();
+    var rfqDate = $("#rfqDate").val();
+    var cname = $("#cname").val();
+    var mobile = $("#mobile").val();
+    var address = $("#address").val();
+    var jobDescription = $("#jobDescription").val();
+    var bestimate = $("#bestimate").val();
+    var sdate = $("#sdate").val();
+    var remarks = $("#remarks").val();
 
-    // if (cname == "") {
-    //     alert("Customer Name is required");
-    //     return false;
-    // }
-    // if (mobile == "") {
-    //     alert("Mobile is required");
-    //     return false;
-    // }
-    // if (address == "") {
-    //     alert("Address is required");
-    //     return false;
-    // }
-    // if (jobDescription == "") {
-    //     alert("Job Description is required");
-    //     return false;
-    // }
-    // if (bestimate == "") {
-    //     alert("Budget Estimate is required");
-    //     return false;
-    // }
-    // if (sdate == "") {
-    //     alert("Survey Date is required");
-    //     return false;
-    // }
-    // if (remarks == "") {
-    //     alert("Remarks is required");
-    //     return false;
-    // }
+    if (cname == "") {
+        alert("Customer Name is required");
+        return false;
+    }
+    if (mobile == "") {
+        alert("Mobile is required");
+        return false;
+    }
+    if (address == "") {
+        alert("Address is required");
+        return false;
+    }
+    if (jobDescription == "") {
+        alert("Job Description is required");
+        return false;
+    }
+    if (bestimate == "") {
+        alert("Budget Estimate is required");
+        return false;
+    }
+    if (sdate == "") {
+        alert("Survey Date is required");
+        return false;
+    }
+    if (remarks == "") {
+        alert("Remarks is required");
+        return false;
+    }
 
     //Add the quotation details to the database
 
-    // $.ajax({
-    //     url: 'req_quotation_insert.php',
-    //     type: 'POST',
-    //     data: {
-    //         rfqDate: rfqDate,
-    //         cname: cname,
-    //         mobile: mobile,
-    //         address: address,
-    //         jobDescription: jobDescription,
-    //         bestimate: bestimate,
-    //         sdate: sdate,
-    //         remarks: remarks
-    //     },
-    //     success: function(response) {
-    //         if (response == 1) {
-    //             alert("Quotation Added Successfully");
-    //             window.location.reload();
-    //         } else {
-    //             alert("Failed to add Quotation");
-    //         }
-    //     },
-    //     error: function(response) {
-    //         alert("Failed to add Quotation");
-    //     },
+    $.ajax({
+        url: 'req_quotation_insert.php',
+        type: 'POST',
+        data: {
+            rfqDate: rfqDate,
+            cname: cname,
+            mobile: mobile,
+            address: address,
+            jobDescription: jobDescription,
+            bestimate: bestimate,
+            sdate: sdate,
+            remarks: remarks
+        },
+        success: function(response) {
+            if (response == 1) {
+                alert("Quotation Added Successfully");
+                window.location.reload();
+            } else {
+                alert("Failed to add Quotation");
+            }
+        },
+        error: function(response) {
+            alert("Failed to add Quotation");
+        },
 
-    // });
+    });
 
 
 }

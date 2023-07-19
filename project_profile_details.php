@@ -11,18 +11,21 @@ $username = $_SESSION['user'];
 //get id from url
 $id = $_GET['id'];
 //select data from database
-$query = "SELECT * FROM quotation WHERE qid = $id";
+$query = "SELECT * FROM project WHERE projectid = $id";
 //execute query
 $result = mysqli_query($connection, $query);
 //fetch data from database
 $row = mysqli_fetch_array($result);
+
+$customer_Id = $row['customer'];
+$project_Id = $row['projectid'];
 
 ?>
 <div class="page-content">
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">QUOTATION Details</h4>
+            <h4 class="mb-3 mb-md-0">PROJECT DETAILS</h4>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap">
 
@@ -35,48 +38,43 @@ $row = mysqli_fetch_array($result);
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title">QUOTATION INFORMATION</h6>
+                    <h6 class="card-title">PROJECT INFORMATION</h6>
                     <div class="row mt-3">
-                        <div class="d-flex">
+                        <div class="d-flex align-items-center">
                             Date : <span class="text-danger ms-2" id="">
-                                <input type="date" class="form-control" id="qdate" name="qdate"
-                                    value="<?php echo $row['qdate']; ?>" data-input required>
+                                <input type="date" class="form-control" id="qdate" name="qdate" data-input
+                                    value="<?php echo $row['datecreated']; ?>">
                             </span>
                         </div>
                     </div>
                     <div class="row mt-3 align-items-center">
+
                         <div class="col-md-3">
-                            <div class="d-flex align-items-center">
-                                Customer Name : <span class="text-uppercase text-danger ms-2" id="">
-                                    <input type="text" class="form-control" id="cname" name="cname"
-                                        value="<?php echo $row['customer']; ?>" data-input required>
-                                </span>
-                            </div>
+                            <label for="psdate">Project Start Date</label>
+                            <input type="date" class="form-control mt-2" id="psdate" name="psdate"
+                                placeholder="Project Start Date" data-input value="<?php echo $row['startdate']; ?>">
                         </div>
                         <div class="col-md-3">
-                            <div class="d-flex align-items-center">
-                                Mobile : <span class="text-danger ms-2" id="">
-                                    <input type="text" class="form-control" id="mob" name="mob"
-                                        value="<?php echo $row['mobile']; ?>" data-input required>
-                                </span>
-                            </div>
+                            <label for="pedate">Project End Date</label>
+                            <input type="date" class="form-control mt-2" id="pedate" name="pedate"
+                                placeholder="Project End Date" data-input value="<?php echo $row['enddate']; ?>">
                         </div>
                         <div class="col-md-3">
-                            <input type="email " class="form-control" id="cemail" name="cemail"
-                                placeholder="Customer Email" value="<?php echo $row['email']; ?>" data-input required>
-                            <input type="hidden" class="form-control" id="cstatus" name="cstatus" placeholder=""
-                                value="<?php echo $row['status']; ?>">
+                            <label for="pduration">Project Duration</label>
+                            <input type="text" class="form-control mt-2" id="pduration" name="pduration" data-input
+                                value="<?php echo $row['duration']; ?>">
                         </div>
                         <div class="col-md-3">
-                            <select class="form-select" id="category" name="category">
-                                <option selected value="cx">Select Category</option>
+                            <label for="pmanager">Project Manager</label>
+                            <select class="form-select mt-2" id="pmanager" name="pmanager">
+                                <option selected value="cx">project manager</option>
                                 <?php
-                                    $cquery = "SELECT * FROM category ORDER BY id DESC";  
+                                    $cquery = "SELECT * FROM manager ORDER BY id DESC";  
                                     $cresult = mysqli_query($connection, $cquery);  
                                     while($crow = mysqli_fetch_array($cresult)){      
                                     ?>
                                 <option value="<?php echo $crow['id']; ?>"
-                                    <?php if($row['category'] == $crow['id']){ echo "selected"; } ?>>
+                                    <?php if($row['pm'] == $crow['id']){ echo "selected"; } ?>>
                                     <?php echo $crow['name']; ?></option>
                                 <?php
                                 }
@@ -86,53 +84,66 @@ $row = mysqli_fetch_array($result);
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex align-items-center">
-                            Address : <span class="text-danger ms-2" id="caddress">
-                                <input type="text" class="form-control" id="caddress" name="caddress"
-                                    value="<?php echo $row['address']; ?>" data-input required>
+                            Customer Name : <span class="text-uppercase text-danger ms-2" id="">
+                                <?php 
+                                                    //echo customer name from customer table
+                                                    $query2 = "SELECT * FROM customer where customerid = '".$row['customer']."'";
+                                                    $select_result2 = mysqli_query($connection, $query2);
+                                                    $row2 = mysqli_fetch_array($select_result2);
+                                                    echo "<input type='text' class='form-control' id='cname' name='cname' data-input value='".$row2['cname']."' readonly>";
+                                                ?>
                             </span>
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex align-items-center">
-                            Description : <span class="text-danger ms-2" id="cdescription">
-                                <input type="text" class="form-control" id="cdescription" name="cdescription"
-                                    value="<?php echo $row['description']; ?>" data-input required>
+                            Description : <span class="text-danger ms-2" id="">
+                                <textarea class="form-control" id="cdescription" name="cdescription" rows="3"
+                                    data-input><?php echo $row['description']; ?></textarea>
                             </span>
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex align-items-center">
-                            <div class="me-5">
-                                Customer Area :
-                            </div>
 
-                            <textarea class="form-control ms-4" id="carea" name="carea" placeholder="Customer Area"
-                                data-input><?php echo $row['area']; ?></textarea>
+                            Project Name : <span class="text-danger ms-2" id="">
+
+                                <input type="text" class="form-control ms-4" id="project_name" name="project_name"
+                                    placeholder="Enter Project Name" data-input
+                                    value="<?php echo $row['projectname']; ?>">
+
+                            </span>
 
                         </div>
                     </div>
-                    <div class="row mt-5">
+
+                    <div class="row mt-3">
                         <div class="d-flex align-items-center">
-                            <div class="me-5">
-                                Payment Mode :
-                            </div>
-                            <textarea rows="3" class="form-control ms-4 ml-3" id="pname" name="pname"
-                                placeholder=""><?php echo $row['paymentmode']; ?></textarea>
+
+                            Payment Mode : <span class="text-danger ms-2" id="">
+
+                                <textarea class="form-control ms-4" id="pname" name="pname" placeholder="" data-input
+                                    readonly><?php echo $row['paymentmode']; ?></textarea>
+                            </span>
 
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="d-flex align-items-center">
-                            <div class="me-3">
-                                Terms & Conditions :
-                            </div>
 
-                            <textarea class="form-control" id="tname" name="tname"
-                                placeholder=""><?php echo $row['terms']; ?></textarea>
+                            Total Budget : <span class="text-danger ms-2" id="">
+
+
+                                <input type="text" class="form-control ms-4" id="total_budget" name="total_budget"
+                                    placeholder="" data-input value="">
+                            </span>
 
                         </div>
-                        <input type="hidden" class="form-control" id="req_id" name="req_id" value="<?php echo $id; ?>">
+                        <input type="hidden" class="form-control" id="cstatus" name="cstatus" placeholder=""
+                            value="<?php echo $row['status']; ?>">
+
                     </div>
+
 
                     <form class="forms-sample mt-3" id="frmsetup" name="frmsetup" method="post" action="lc_insert.php">
                         <h4 class="form-title">Proposed Works</h4>
@@ -165,16 +176,13 @@ $row = mysqli_fetch_array($result);
                                             <th class="text-center" id="thdate" style="width:10%">
                                                 Amount
                                             </th>
-                                            <th class="text-center" id="thdate" style="width:20%">
-                                                Remarks
-                                            </th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr id='addr0'>
                                             <?php 
-                                                $query = "SELECT * FROM quotationdetail WHERE qidf = '$id'";
+                                                $query = "SELECT * FROM projectdetail WHERE projectidf = '$id'";
                                                 $result = mysqli_query($connection, $query);
                                                 $counter = 1;
                                                 //run a for loop of $total  results
@@ -183,7 +191,7 @@ $row = mysqli_fetch_array($result);
                                                     echo "<td>" . $counter . "</td>";
                                                     //form td with input field
                                                     echo "<td>" 
-                                                    . "<select class='form-select' id='service0' name='service[]' required>" 
+                                                    . "<select class='form-select' id='service0' name='service[]' required disabled>" 
                                                     . "<option selected value=''>Select Item</option>";
                                                     //database query to fetch item list
                                                     $query = "SELECT * FROM services ORDER BY serviceid DESC";
@@ -200,21 +208,19 @@ $row = mysqli_fetch_array($result);
 
                                                     echo "<td>" 
                                                         
-                                                        . "<input type='text' id='description0' name='description[]' placeholder='Enter Description' class='form-control input-md' value='" . $row['description'] . "'/>" . "</td>";
+                                                        . "<input type='text' id='description0' name='description[]' readonly placeholder='Enter Description' class='form-control input-md' value='" . $row['description'] . "'/>" . "</td>";
                                                    
                                                     echo "<td>"
-                                                        . "<input type='text' id='quantity0' name='quantity[]' placeholder='Enter Quantity' class='form-control input-md' value='" . $row['quantity'] . "'/>" . "</td>"; 
+                                                        . "<input type='text' id='quantity0' readonly name='quantity[]' placeholder='Enter Quantity' class='form-control input-md' value='" . $row['quantity'] . "'/>" . "</td>"; 
                                                     echo "<td>"
-                                                        . "<input type='text' id='uom0' name='uom[]' placeholder='Enter Uom' class='form-control input-md' value='" . $row['uom'] . "'/>" . 
+                                                        . "<input type='text' id='uom0' name='uom[]' readonly placeholder='Enter Uom' class='form-control input-md' value='" . $row['uom'] . "'/>" . 
                                                      "</td>";
                                                     echo "<td>" 
-                                                        . "<input type='text' id='rate0' name='rate[]' placeholder='Enter Rate' class='form-control input-md' value='" . $row['rate'] . "'/>" . "</td>";
+                                                        . "<input type='text' id='rate0' name='rate[]' readonly placeholder='Enter Rate' class='form-control input-md' value='" . $row['rate'] . "'/>" . "</td>";
                                                      "</td>";
                                                     echo "<td>" 
-                                                        . "<input type='text' id='amount0' name='amount[]' placeholder='Enter Amount' class='form-control input-md' value='" . $row['amount'] . "'/>" . "</td>";
-                                                    echo "<td>" 
-                                                        . "<input type='text' id='remarks0' name='remarks[]' placeholder='Enter Remarks' class='form-control input-md' value='" . $row['remarks'] . "'/>" .
-                                                     "</td>";
+                                                        . "<input type='text' id='amount0' name='amount[]' readonly placeholder='Enter Amount' class='form-control input-md' value='" . $row['amount'] . "' onBlur ='addSum()'/>" . "</td>";
+                                                        "</td>";
                                                     echo "</tr>";
                                                     $counter++;
                                                 }
@@ -234,22 +240,98 @@ $row = mysqli_fetch_array($result);
                         </div>
                     </form>
                     <hr>
+                    <div class="row mt-3">
+                        <div class="col-md-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Task List</h6>
+                                    <div class="table-responsive" id="datagrid">
+                                        <table id="" class="table table-hover table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sl No</th>
+                                                    <th>Task Name</th>
+                                                    <th>Description</th>
+                                                    <th>Assigned Manger</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                    
+                                    $query = "SELECT * FROM project_task WHERE pid = '$id'";  
+                                    $select_result = mysqli_query($connection, $query);
+                                    //count row > 0
+                                    if(mysqli_num_rows($select_result) > 0){
+                                        while($row = mysqli_fetch_array($select_result)){      
+                                    ?>
+                                                <tr>
+                                                    <td><?php echo ++$i; ?></td>
+                                                    <td><?php echo $row['taskname']; ?></td>
+                                                    <td><?php echo $row['description']; ?></td>
+                                                    <td>
+                                                        <?php
+
+                                                $query = "SELECT * FROM services WHERE serviceid = '".$row['assignedto']."'";
+                                                $result = mysqli_query($connection, $query);
+                                                $service = mysqli_fetch_assoc($result);
+                                                echo $service['sname'];
+                                                
+                                                ?>
+
+                                                    </td>
+                                                    </td>
+                                                    <td><?php echo $row['startdate']; ?></td>
+                                                    <td><?php echo $row['enddate']; ?></td>
+                                                    <td>
+                                                        <?php if($row['status'] == '0'){ ?>
+                                                        <span class="text-warning">Pending</span>
+
+                                                        <?php }else{ ?>
+                                                        <span class="text-success">Done</span>
+                                                        <?php } ?>
+                                                    </td>
+
+                                                    <td>
+                                                        <a href="show_task_details.php?id=<?php echo $row['taskid']; ?>"
+                                                            class="btn btn-primary btn-sm">Details</a>
+                                                    </td>
+
+                                                </tr>
+                                                <?php }
+                                    }else{
+                                        echo "<tr><td colspan='10' class='text-center'>No Data Found</td></tr>";
+                                    }  
+                                     ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6 column text-left">
-                            <button id="add_row" class="btn btn-danger" onclick="addrow();">Add Row</button>
-                            <button id="delete_row" class="btn btn-danger" onclick="delrow();">Remove Row</button>
+                            <!-- <button id="add_row" class="btn btn-danger" onclick="addrow();">Add Row</button> -->
+                            <!-- <button id="delete_row" class="btn btn-danger" onclick="delrow();">Remove Row</button> -->
                         </div>
                         <div class="col-md-6 column pull-right">
-                            <button type="submit" class="btn btn-primary me-2 b-right" onclick="saveRecord();">Save
-                                changes</button>
-                            <div id="status_update">
+                            <a class="btn btn-success me-2 b-right"
+                                href="customer_ledger.php?id=<?php echo $customer_Id ?>">Customer Ledger</a>
+                            <a class="btn btn-success me-2 b-right" href="supplier.php">Close Project</a>
+                            <a class="btn btn-success me-2 b-right"
+                                href="invoice_info.php?id=<?php echo $project_Id ?>">Create Invoice</a>
 
-                            </div>
-                            <div id="reject_status_update">
+                            <!-- <button type="submit" class="btn btn-primary me-2 b-right" onclick="saveRecord();">Save
+                                changes</button> -->
+                            <!-- <div id="status_update">
 
-                            </div>
+                            </div> -->
 
-                            <a class="btn btn-success me-2 b-right" href="supplier.php">Back</a>
+                            <!-- <a class="btn btn-success me-2 b-right" href="supplier.php">Back</a> -->
                         </div>
                     </div>
 
@@ -325,13 +407,10 @@ $row = mysqli_fetch_array($result);
     referrerpolicy="origin"></script>
 <script>
 tinymce.init({
-    selector: '#carea'
-});
-tinymce.init({
     selector: '#pname'
 });
 tinymce.init({
-    selector: '#tname'
+    selector: '#cdescription'
 });
 </script>
 
@@ -343,10 +422,6 @@ function status_check() {
         $('#status_update').html(
             '<button type="submit" class="btn btn-primary me-2 b-right" onclick="saveStatus();">Accept</button>'
         );
-        $('#reject_status_update').html(
-            '<button type="submit" class="btn btn-warning me-2 b-right" onclick="saveStatus2();">Reject</button>'
-        );
-
     } else {
         $('#status_update').html('');
     }
@@ -372,8 +447,7 @@ function addrow() {
         ')"  name="rate[]" id="rate' + i +
         '" type="number" class="form-control square" readonly></td><td><input onblur="checkr(' + i +
         ')"  name="amount[]" id="amount' + i +
-        '" type="number" class="form-control square"></td><td><input onblur="checkr(' + i +
-        ')"  name="remarks[]" id="remark' + i + '" type="text" class="form-control square"></td>');
+        '" type="number" class="form-control square"></td>');
 
     $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
 
@@ -443,6 +517,56 @@ function chkproblem(id) {
     })
 }
 
+//create a function & sum all amount value & set it to total_budget & it change automatically when amount change without page refresh
+function sum() {
+    var sum = 0;
+    var amount = document.getElementsByName("amount[]");
+    var amountId = [];
+    for (var i = 0; i < amount.length; i++) {
+        amountId.push(amount[i].value);
+    }
+    for (var i = 0; i < amountId.length; i++) {
+        sum = sum + parseInt(amountId[i]);
+    }
+    document.getElementById("total_budget").value = sum;
+
+}
+sum();
+
+function addSum() {
+    var sum = 0;
+    var amount = document.getElementsByName("amount[]");
+    var amountId = [];
+    for (var i = 0; i < amount.length; i++) {
+        amountId.push(amount[i].value);
+    }
+    for (var i = 0; i < amountId.length; i++) {
+        sum = sum + parseInt(amountId[i]);
+    }
+    document.getElementById("total_budget").value = sum;
+
+}
+
+function saveStatus() {
+    var id = <?php echo $id ?>;
+
+    $.ajax({
+        url: "show_project_details_status.php",
+        type: "POST",
+        data: {
+            id: id
+        },
+        success: function(data) {
+            alert("Status Updated Successfully");
+            window.location.href = "show_project.php";
+        },
+        error: function(data) {
+            console.log(data);
+        }
+
+    })
+}
+
 function saveRecord() {
     var service = document.getElementsByName("service[]");
     var description = document.getElementsByName("description[]");
@@ -450,16 +574,12 @@ function saveRecord() {
     var uom = document.getElementsByName("uom[]");
     var rate = document.getElementsByName("rate[]");
     var amount = document.getElementsByName("amount[]");
-    var remarks = document.getElementsByName("remarks[]");
-    var id = <?php echo $id; ?>;
-
     var serviceid = [];
     var descriptionid = [];
     var quantityid = [];
     var uomid = [];
     var rateid = [];
     var amountid = [];
-    var remarkid = [];
     for (var i = 0; i < service.length; i++) {
 
         serviceid.push(service[i].value);
@@ -468,41 +588,26 @@ function saveRecord() {
         uomid.push(uom[i].value);
         rateid.push(rate[i].value);
         amountid.push(amount[i].value);
-        remarkid.push(remarks[i].value);
-
-
     }
 
 
 
-    var rdate = $("#rdate").val();
+    var qdate = $("#qdate").val();
+    var psdate = $("#psdate").val();
+    var pedate = $("#pedate").val();
+    var pduration = $("#pduration").val();
+    var pmanager = $("#pmanager").val();
+    var project_name = $("#project_name").val();
     var cname = $("#cname").val();
-    var mob = $("#mob").val();
-    var cemail = $("#cemail").val();
-    var category = $("#category").val();
-    var caddress = $("#caddress").val();
-    var cdescription = $("#cdescription").val();
-    var carea = tinymce.get("carea").getContent();
+    var cdescription = tinymce.get("cdescription").getContent();
     var pname = tinymce.get("pname").getContent();
-    var tname = tinymce.get("tname").getContent();
-    var preparedby = '<?php echo $username ?>'
-    var reqid = $("#req_id").val();
-
-    if (cemail == '') {
-        alert("Please Enter Email");
-    }
-    if (category == 'cx') {
-        alert("Please Select Category");
-    }
-    if (carea == '') {
-        alert("Please Select Area");
-    }
-    if (pname == '') {
-        alert("Please Select Payment Mode");
-    }
-    if (tname == '') {
-        alert("Please Select Terms");
-    }
+    var caddress = $("#caddress").val();
+    var carea = $("#carea").val();
+    var cmob = $("#cmob").val();
+    var cemail = $("#cemail").val();
+    var ccategory = $("#ccategory").val();
+    var total_budget = $("#total_budget").val();
+    var id = <?php echo $id ?>;
 
 
     var form = $('#frmsetup')[0];
@@ -513,29 +618,35 @@ function saveRecord() {
     data.append("uomid", uomid);
     data.append("rateid", rateid);
     data.append("amountid", amountid);
-    data.append("remarkid", remarkid);
-    data.append("rdate", rdate);
+    data.append("qdate", qdate);
+    data.append("psdate", psdate);
+    data.append("pedate", pedate);
+    data.append("pduration", pduration);
+    data.append("pmanager", pmanager);
+    data.append("project_name", project_name);
     data.append("cname", cname);
-    data.append("mob", mob);
-    data.append("cemail", cemail);
-    data.append("category", category);
-    data.append("caddress", caddress);
     data.append("cdescription", cdescription);
-    data.append("carea", carea);
     data.append("pname", pname);
-    data.append("tname", tname);
-    data.append("preparedby", preparedby);
-    data.append("reqid", reqid);
+    data.append("caddress", caddress);
+    data.append("carea", carea);
+    data.append("cmob", cmob);
+    data.append("cemail", cemail);
+    data.append("ccategory", ccategory);
+    data.append("total_budget", total_budget);
     data.append("id", id);
 
+
+
+
+
     $.ajax({
-        url: "show_quotation_details_update.php",
+        url: "show_project_details_update.php",
         type: "POST",
         data: data,
         processData: false,
         contentType: false,
         success: function(data) {
-            alert("Quotation Updated Successfully");
+            alert("Project Updated Successfully");
             window.location.reload();
         },
         error: function(data) {
@@ -550,45 +661,7 @@ function checkr() {
 
 }
 
-function saveStatus() {
-    var id = <?php echo $id ?>;
 
-    $.ajax({
-        url: "show_quotation_details_status.php",
-        type: "POST",
-        data: {
-            id: id
-        },
-        success: function(data) {
-            alert("Status Updated Successfully");
-            window.location.href = "show_quotation.php";
-        },
-        error: function(data) {
-            console.log(data);
-        }
-
-    })
-}
-
-function saveStatus2() {
-    var id = <?php echo $id ?>;
-
-    $.ajax({
-        url: "show_quotation_details_reject.php",
-        type: "POST",
-        data: {
-            id: id
-        },
-        success: function(data) {
-            alert("Status Updated Successfully");
-            window.location.href = "show_quotation.php";
-        },
-        error: function(data) {
-            console.log(data);
-        }
-
-    })
-}
 
 
 

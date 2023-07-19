@@ -41,14 +41,11 @@ include_once('databases.php');
                                     <thead>
                                         <tr>
                                             <th>Sl No</th>
+                                            <th>Project Code</th>
                                             <th>Project Name</th>
-                                            <th>Customer Name</th>
-                                            <th>Date</th>
-                                            <th>Payment Mode</th>
+                                            <th>Customer</th>
+                                            <th>Area</th>
                                             <th>Project Start Date</th>
-                                            <th>Project End Date</th>
-                                            <th>Project Duration</th>
-                                            <th>Project Manager</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -64,23 +61,32 @@ include_once('databases.php');
                                     ?>
                                         <tr>
                                             <td><?php echo ++$i; ?></td>
+                                            <td><?php echo $row['projectid']; ?></td>
                                             <td><?php echo $row['projectname']; ?></td>
-                                            <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['datecreated']; ?></td>
-                                            <td><?php echo $row['paymentmode']; ?></td>
-                                            <td><?php echo $row['startdate']; ?></td>
-                                            <td><?php echo $row['enddate']; ?></td>
-                                            <td><?php echo $row['duration']; ?></td>
-                                            <?php
-                                            $query = "SELECT * FROM category where id = '".$row['pm']."'";
-                                            $select_result1 = mysqli_query($connection, $query);
-                                            $row1 = mysqli_fetch_array($select_result1);
-                                            ?>
-                                            <td><?php echo $row1['name']; ?></td>
-
                                             <td>
-                                                <a href="show_project_details.php?id=<?php echo $row['projectid']; ?>"
+                                                <?php 
+                                                    //echo customer name from customer table
+                                                    $query2 = "SELECT * FROM customer where customerid = '".$row['customer']."'";
+                                                    $select_result2 = mysqli_query($connection, $query2);
+                                                    $row2 = mysqli_fetch_array($select_result2);
+                                                    echo $row2['cname'];
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                    //echo customer area from customer table
+                                                    $query2 = "SELECT * FROM customer where customerid = '".$row['customer']."'";
+                                                    $select_result2 = mysqli_query($connection, $query2);
+                                                    $row2 = mysqli_fetch_array($select_result2);
+                                                    echo $row2['area'];
+                                                ?>
+                                            </td>
+                                            <td><?php echo $row['startdate']; ?></td>
+                                            <td>
+                                                <a href="show_data_details.php?id=<?php echo $row['projectid']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
+                                                <a href="create_task.php?id=<?php echo $row['projectid']; ?>"
+                                                    class="btn btn-primary btn-sm">CREATE TASK</a>
                                             </td>
 
                                         </tr>
@@ -108,14 +114,11 @@ include_once('databases.php');
                                     <thead>
                                         <tr>
                                             <th>Sl No</th>
+                                            <th>Project Code</th>
                                             <th>Project Name</th>
-                                            <th>Customer Name</th>
-                                            <th>Date</th>
-                                            <th>Payment Mode</th>
+                                            <th>Customer</th>
+                                            <th>Area</th>
                                             <th>Project Start Date</th>
-                                            <th>Project End Date</th>
-                                            <th>Project Duration</th>
-                                            <th>Project Manager</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -131,27 +134,32 @@ include_once('databases.php');
                                     ?>
                                         <tr>
                                             <td><?php echo ++$i; ?></td>
+                                            <td><?php echo $row['projectid']; ?></td>
                                             <td><?php echo $row['projectname']; ?></td>
-                                            <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['datecreated']; ?></td>
-                                            <td><?php echo $row['paymentmode']; ?></td>
-                                            <td><?php echo $row['startdate']; ?></td>
-                                            <td><?php echo $row['enddate']; ?></td>
-                                            <td><?php echo $row['duration']; ?></td>
-                                            <?php
-                                            $query = "SELECT * FROM category where id = '".$row['pm']."'";
-                                            $select_result1 = mysqli_query($connection, $query);
-                                            $row1 = mysqli_fetch_array($select_result1);
-                                            ?>
-                                            <td><?php echo $row1['name']; ?></td>
-
                                             <td>
-                                                <a href="show_project_details.php?id=<?php echo $row['projectid']; ?>"
+                                                <?php 
+                                                    //echo customer name from customer table
+                                                    $query2 = "SELECT * FROM customer where customerid = '".$row['customer']."'";
+                                                    $select_result2 = mysqli_query($connection, $query2);
+                                                    $row2 = mysqli_fetch_array($select_result2);
+                                                    echo $row2['cname'];
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                    //echo customer area from customer table
+                                                    $query2 = "SELECT * FROM customer where customerid = '".$row['customer']."'";
+                                                    $select_result2 = mysqli_query($connection, $query2);
+                                                    $row2 = mysqli_fetch_array($select_result2);
+                                                    echo $row2['area'];
+                                                ?>
+                                            </td>
+                                            <td><?php echo $row['startdate']; ?></td>
+                                            <td>
+                                                <a href="project_profile_details.php?id=<?php echo $row['projectid']; ?>"
                                                     class="btn btn-primary btn-sm">Details</a>
-                                                <a href="create_task.php?id=<?php echo $row['projectid']; ?>"
-                                                    class="btn btn-primary btn-sm">CREATE TASK</a>
-                                                <a href="show_task_info.php?id=<?php echo $row['projectid']; ?>"
-                                                    class="btn btn-primary btn-sm">SHOW TASK</a>
+                                                <!-- <a href="create_task.php?id=<?php echo $row['projectid']; ?>"
+                                                    class="btn btn-primary btn-sm">CREATE TASK</a> -->
                                             </td>
 
                                         </tr>

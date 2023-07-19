@@ -10,7 +10,7 @@ include_once('databases.php');
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">PROJECT DETAILS</h4>
+            <h4 class="mb-3 mb-md-0">QUOTATION DETAILS</h4>
         </div>
         <!-- <div class="d-flex align-items-center flex-wrap text-nowrap">
             <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0" data-bs-toggle="modal"
@@ -19,151 +19,59 @@ include_once('databases.php');
 
     </div>
 
-    <ul class="nav nav-tabs nav-tabs-line" id="myTab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home"
-                aria-selected="true">Pending</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-                aria-selected="false">Done</a>
-        </li>
-    </ul>
-    <div class="tab-content border border-top-0 p-3" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <div class="row mt-3">
-                <div class="col-md-12 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 class="card-title">Data Table</h6>
-                            <div class="table-responsive" id="datagrid">
-                                <table id="dataTableExample" class="table table-hover table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Sl No</th>
-                                            <th>Project Name</th>
-                                            <th>Customer Name</th>
-                                            <th>Date</th>
-                                            <th>Payment Mode</th>
-                                            <th>Project Start Date</th>
-                                            <th>Project End Date</th>
-                                            <th>Project Duration</th>
-                                            <th>Project Manager</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
+
+    <div class="row mt-3">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Data Table</h6>
+                    <div class="table-responsive" id="datagrid">
+                        <table id="dataTableExample" class="table table-hover table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Quotation Id</th>
+                                    <th>Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Mobile</th>
+                                    <th>Address</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
                                     
-                                    $query = "SELECT * FROM project where status = 'pending' ORDER BY projectid DESC";  
+                                    $query = "SELECT * FROM quotation where status = 'done' ORDER BY qid DESC";  
                                     $select_result = mysqli_query($connection, $query);
-                                    $i = 0;
                                     //count row > 0
                                     if(mysqli_num_rows($select_result) > 0){
                                         while($row = mysqli_fetch_array($select_result)){      
                                     ?>
-                                        <tr>
-                                            <td><?php echo ++$i; ?></td>
-                                            <td><?php echo $row['projectname']; ?></td>
-                                            <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['datecreated']; ?></td>
-                                            <td><?php echo $row['paymentmode']; ?></td>
-                                            <td><?php echo $row['startdate']; ?></td>
-                                            <td><?php echo $row['enddate']; ?></td>
-                                            <td><?php echo $row['duration']; ?></td>
-                                            <?php
-                                            $query = "SELECT * FROM category where id = '".$row['pm']."'";
-                                            $select_result1 = mysqli_query($connection, $query);
-                                            $row1 = mysqli_fetch_array($select_result1);
-                                            ?>
-                                            <td><?php echo $row1['name']; ?></td>
+                                <tr>
+                                    <td><?php echo ++$i; ?></td>
+                                    <td><?php echo $row['qid']; ?></td>
+                                    <td><?php echo $row['qdate']; ?></td>
+                                    <td><?php echo $row['customer']; ?></td>
+                                    <td><?php echo $row['mobile']; ?></td>
+                                    <td><?php echo $row['address']; ?></td>
+                                    <td><?php echo $row['description']; ?></td>
 
-                                            <td>
-                                                <a href="show_project_details.php?id=<?php echo $row['projectid']; ?>"
-                                                    class="btn btn-primary btn-sm">Details</a>
-                                            </td>
+                                    <td>
+                                        <a href="show_quotation_details.php?id=<?php echo $row['qid']; ?>"
+                                            class="btn btn-primary btn-sm">Details</a>
+                                        <a href="create_project.php?id=<?php echo $row['qid']; ?>"
+                                            class="btn btn-primary btn-sm">CREATE PROJECT</a>
+                                    </td>
 
-                                        </tr>
-                                        <?php }
+                                </tr>
+                                <?php }
                                     }else{
                                         echo "<tr><td colspan='10' class='text-center'>No Data Found</td></tr>";
                                     }  
                                      ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            <div class="row mt-3">
-                <div class="col-md-12 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 class="card-title">Data Table</h6>
-                            <div class="table-responsive" id="datagrid">
-                                <table id="dataTableExample" class="table table-hover table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Sl No</th>
-                                            <th>Project Name</th>
-                                            <th>Customer Name</th>
-                                            <th>Date</th>
-                                            <th>Payment Mode</th>
-                                            <th>Project Start Date</th>
-                                            <th>Project End Date</th>
-                                            <th>Project Duration</th>
-                                            <th>Project Manager</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                    
-                                    $query = "SELECT * FROM project where status = 'done' ORDER BY projectid DESC";  
-                                    $select_result = mysqli_query($connection, $query);
-                                    $i = 0;
-                                    //count row > 0
-                                    if(mysqli_num_rows($select_result) > 0){
-                                        while($row = mysqli_fetch_array($select_result)){      
-                                    ?>
-                                        <tr>
-                                            <td><?php echo ++$i; ?></td>
-                                            <td><?php echo $row['projectname']; ?></td>
-                                            <td><?php echo $row['customer']; ?></td>
-                                            <td><?php echo $row['datecreated']; ?></td>
-                                            <td><?php echo $row['paymentmode']; ?></td>
-                                            <td><?php echo $row['startdate']; ?></td>
-                                            <td><?php echo $row['enddate']; ?></td>
-                                            <td><?php echo $row['duration']; ?></td>
-                                            <?php
-                                            $query = "SELECT * FROM category where id = '".$row['pm']."'";
-                                            $select_result1 = mysqli_query($connection, $query);
-                                            $row1 = mysqli_fetch_array($select_result1);
-                                            ?>
-                                            <td><?php echo $row1['name']; ?></td>
-
-                                            <td>
-                                                <a href="show_project_details.php?id=<?php echo $row['projectid']; ?>"
-                                                    class="btn btn-primary btn-sm">Details</a>
-                                                <a href="create_task.php?id=<?php echo $row['projectid']; ?>"
-                                                    class="btn btn-primary btn-sm">CREATE TASK</a>
-                                                <a href="show_task_info.php?id=<?php echo $row['projectid']; ?>"
-                                                    class="btn btn-primary btn-sm">SHOW TASK</a>
-                                            </td>
-
-                                        </tr>
-                                        <?php }
-                                    }else{
-                                        echo "<tr><td colspan='10' class='text-center'>No Data Found</td></tr>";
-                                    }  
-                                     ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

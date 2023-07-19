@@ -55,20 +55,28 @@ $i=0;
                 <div class="card-body">
                     <h6 class="card-title">QUOTATION INFORMATION</h6>
                     <div class="row mt-3">
-                        <div class="d-flex">
-                            Date : <span class="text-danger ms-2" id="rdate"><?php echo $row['rdate']; ?></span>
+                        <div class="d-flex align-items-center">
+                            Date : <span class="text-danger ms-2">
+                                <input readonly type="date" class="form-control" id="rdate" name="rdate"
+                                    value="<?php echo $row['rdate']; ?>" />
+                            </span>
                         </div>
                     </div>
                     <div class="row mt-3 align-items-center">
                         <div class="col-md-3">
-                            <div class="d-flex">
-                                Customer Name : <span class="text-uppercase text-danger ms-2"
-                                    id="cname"><?php echo $row['customer']; ?></span>
+                            <div class="d-flex align-items-center">
+                                Customer Name : <span class="text-uppercase text-danger ms-2" id="">
+                                    <input readonly type="text" class="form-control" id="cname" name="cname"
+                                        value="<?php echo $row['customer']; ?>" />
+                                </span>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="d-flex">
-                                Mobile : <span class="text-danger ms-2" id="mob"><?php echo $row['mob']; ?></span>
+                            <div class="d-flex align-items-center">
+                                Mobile : <span class="text-danger ms-2" id="">
+                                    <input readonly type="text" class="form-control" id="mob" name="mob"
+                                        value="<?php echo $row['mob']; ?>" />
+                                </span>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -93,46 +101,50 @@ $i=0;
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="d-flex">
-                            Address : <span class="text-danger ms-2" id="caddress"><?php echo $row['address']; ?></span>
+                        <div class="d-flex align-items-center">
+                            Address : <span class="text-danger ms-2" id="">
+                                <input readonly type="text" class="form-control" id="caddress" name="caddress"
+                                    value="<?php echo $row['address']; ?>" />
+                            </span>
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="d-flex">
-                            Description : <span class="text-danger ms-2"
-                                id="cdescription"><?php echo $row['description']; ?></span>
+                        <div class="d-flex align-items-center">
+                            Description : <span class="text-danger ms-2" id="">
+                                <input readonly type="text" class="form-control" id="cdescription" name="cdescription"
+                                    value="<?php echo $row['description']; ?>" />
+                            </span>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="d-flex">
-                            <div>
+                    <div class="row mt-5">
+                        <div class="d-flex align-items-center">
+                            <div class="me-5">
                                 Customer Area :
                             </div>
 
-                            <input type="text" class="form-control ms-4" id="carea" name="carea"
-                                placeholder="Customer Area" data-input>
+                            <textarea class="form-control ms-4" id="carea" name="carea" placeholder="Customer Area"
+                                data-input> </textarea>
 
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="d-flex">
-                            <div>
+                    <div class="row mt-5">
+                        <div class="d-flex align-items-center">
+                            <div class="me-5">
                                 Payment Mode :
                             </div>
-
-                            <input type="text" class="form-control ms-4" id="pname" name="pname" placeholder=""
-                                data-input value="<?php echo $row1['pname']; ?>">
+                            <textarea rows="3" class="form-control ms-4 ml-3" id="pname" name="pname"
+                                placeholder=""><?php echo $row1['pname']; ?></textarea>
 
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="d-flex">
-                            <div>
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
                                 Terms & Conditions :
                             </div>
 
-                            <input type="text" class="form-control" id="tname" name="tname" placeholder="" data-input
-                                value="<?php echo $row2['tname']; ?>">
+                            <textarea class="form-control" id="tname" name="tname"
+                                placeholder=""><?php echo $row2['tname']; ?></textarea>
 
                         </div>
                         <input type="hidden" class="form-control" id="req_id" name="req_id" value="<?php echo $id; ?>">
@@ -228,17 +240,13 @@ $i=0;
                                                     class="form-control rounded" onblur="checkr(0);" value="" readonly>
                                             </td>
                                             <td>
-                                                <input type="number" name="amount[]" id="amount0"
+                                                <input type="number" name="amount[]" id="amount0" readonly
                                                     class="form-control rounded" onblur="checkr(0);" value="">
                                             </td>
                                             <td>
                                                 <input type="text" name="remark[]" id="remark0"
                                                     class="form-control rounded" onblur="checkr(0);" value="">
                                             </td>
-
-
-
-
                                         </tr>
                                         <tr id='addr1'></tr>
                                     </tbody>
@@ -327,7 +335,19 @@ $i=0;
 <script src="assets/js/pickr.js"></script>
 <script src="assets/js/flatpickr.js"></script>
 <!-- End custom js for this page -->
-
+<script src="https://cdn.tiny.cloud/1/om1mfe8jxhci89e1o7c1b7g2ppdze0bl1kcsn14wsky5yey4/tinymce/6/tinymce.min.js"
+    referrerpolicy="origin"></script>
+<script>
+tinymce.init({
+    selector: '#carea'
+});
+tinymce.init({
+    selector: '#pname'
+});
+tinymce.init({
+    selector: '#tname'
+});
+</script>
 <script type="text/javascript">
 var i = 1;
 
@@ -417,16 +437,16 @@ function saveRecord() {
 
 
 
-    var rdate = $("#rdate").html();
-    var cname = $("#cname").html();
-    var mob = $("#mob").html();
+    var rdate = $("#rdate").val();
+    var cname = $("#cname").val();
+    var mob = $("#mob").val();
     var cemail = $("#cemail").val();
     var category = $("#category").val();
-    var caddress = $("#caddress").html();
-    var cdescription = $("#cdescription").html();
-    var carea = $("#carea").val();
-    var pname = $("#pname").val();
-    var tname = $("#tname").val();
+    var caddress = $("#caddress").val();
+    var cdescription = $("#cdescription").val();
+    var carea = tinymce.get("carea").getContent();
+    var pname = tinymce.get("pname").getContent();
+    var tname = tinymce.get("tname").getContent();
     var preparedby = '<?php echo $username ?>'
     var reqid = $("#req_id").val();
 
@@ -494,7 +514,14 @@ function saveRecord() {
 
 }
 
-function checkr() {
+function checkr(i) {
+    //get quantity
+    var quantity = document.getElementById("quantity" + i).value;
+    //get rate
+    var rate = document.getElementById("rate" + i).value;
+    var amount = quantity * rate;
+    //set amount and amount
+    document.getElementById("amount" + i).value = amount;
 
 }
 
